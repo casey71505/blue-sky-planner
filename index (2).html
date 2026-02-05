@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluesky Creativity Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-deep: #0c0e1a;
+            --bg-card: rgba(16, 18, 35, 0.9);
+            --bg-input: rgba(8, 10, 22, 0.7);
+            --border-subtle: rgba(120, 140, 255, 0.12);
+            --border-hover: rgba(120, 140, 255, 0.3);
+            --accent: #7c8cf5;
+            --accent-bright: #a0adff;
+            --accent-glow: rgba(124, 140, 245, 0.4);
+            --accent-soft: rgba(124, 140, 245, 0.1);
+            --text-primary: #e8eaff;
+            --text-secondary: #8b8faa;
+            --text-muted: #565873;
+            --success: #4ade80;
+            --success-soft: rgba(74, 222, 128, 0.15);
+            --warning: #fbbf24;
+            --warning-soft: rgba(251, 191, 36, 0.15);
+            --danger: #f87171;
+            --radius: 10px;
+            --radius-lg: 14px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(180deg, #1a6dc2 0%, #56a5eb 30%, #87ceeb 55%, #b0ddf5 75%, #d4ecfc 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 24px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                url('https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?w=1920&q=80') center/cover no-repeat,
+                linear-gradient(180deg, #1a6dc2 0%, #56a5eb 30%, #87ceeb 55%, #b0ddf5 75%, #d4ecfc 100%);
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(8, 10, 20, 0.45);
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content { min-width: 0; }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 28px;
+            padding: 28px 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            color: var(--accent-bright);
+            font-size: 0.92em;
+            font-weight: 400;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+
+        /* Project Info */
+        .project-info { margin-bottom: 20px; }
+
+        .project-info-form .input-group {
+            margin-bottom: 14px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8em;
+            color: var(--accent-bright);
+            margin-bottom: 5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .project-info input[type="text"],
+        .project-info input[type="date"] {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        .project-info input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(16, 18, 35, 0.95);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .project-info input::placeholder { color: var(--text-muted); }
+
+        .confirm-info-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 11px 28px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.88em;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s ease;
+            margin-top: 6px;
+        }
+
+        .confirm-info-btn:hover {
+            background: var(--accent-bright);
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        /* Project Info Display */
+        .project-info-display {
+            display: none;
+        }
+
+        .project-info-display.visible {
+            display: block;
+        }
+
+        .project-info-form.hidden { display: none; }
+
+        .info-card-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .info-item {
+            padding: 14px 16px;
+            background: var(--accent-soft);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+        }
+
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .info-item-label {
+            font-size: 0.72em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .info-item-value {
+            font-size: 0.95em;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .edit-info-btn {
+            background: transparent;
+            color: var(--accent-bright);
+            border: 1px solid var(--border-hover);
+            padding: 8px 18px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.82em;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s ease;
+            margin-top: 14px;
+        }
+
+        .edit-info-btn:hover {
+            background: var(--accent-soft);
+            border-color: var(--accent);
+        }
+
+        /* Progress Section */
+        .progress-section { margin-bottom: 20px; }
+
+        .section-title {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .progress-stats {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .stat {
+            flex: 1;
+            padding: 14px;
+            background: var(--accent-soft);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .stat-label {
+            font-size: 0.7em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--accent-bright);
+        }
+
+        .progress-bar-outer {
+            background: rgba(30, 32, 55, 0.8);
+            height: 36px;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5b6cf5, #8b9aff, #b0baff);
+            transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            border-radius: 18px;
+            position: relative;
+            min-width: 0;
+        }
+
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+            border-radius: 18px;
+        }
+
+        .progress-bar-fill.glow {
+            box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(124, 140, 245, 0.2);
+        }
+
+        .progress-bar-text {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.88em;
+            z-index: 2;
+            color: var(--text-primary);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+
+        /* Steps */
+        .step {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.25s ease;
+        }
+
+        .step:hover {
+            border-color: var(--border-hover);
+            box-shadow: 0 4px 24px rgba(124, 140, 245, 0.06);
+        }
+
+        .step.completed {
+            border-color: rgba(74, 222, 128, 0.3);
+            background: rgba(16, 18, 35, 0.95);
+        }
+
+        .step.completed::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--success), transparent);
+        }
+
+        .step { position: relative; overflow: hidden; }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 18px;
+            gap: 14px;
+        }
+
+        .step-title-group { flex: 1; }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: var(--accent-soft);
+            border: 1px solid var(--border-subtle);
+            border-radius: 50%;
+            font-size: 0.75em;
+            font-weight: 700;
+            color: var(--accent-bright);
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .step.completed .step-number {
+            background: var(--success-soft);
+            border-color: rgba(74, 222, 128, 0.3);
+            color: var(--success);
+        }
+
+        .step-title {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .step-duration {
+            font-size: 0.82em;
+            color: var(--text-secondary);
+        }
+
+        .complete-step-btn {
+            background: var(--accent-soft);
+            color: var(--accent-bright);
+            border: 1px solid var(--border-hover);
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.82em;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .complete-step-btn:hover {
+            background: rgba(124, 140, 245, 0.2);
+            border-color: var(--accent);
+        }
+
+        .step.completed .complete-step-btn {
+            background: var(--success-soft);
+            border-color: rgba(74, 222, 128, 0.3);
+            color: var(--success);
+        }
+
+        /* Action Items */
+        .action-items { margin: 14px 0; }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+            padding: 10px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            transition: all 0.2s ease;
+        }
+
+        .action-item:hover { border-color: var(--border-hover); }
+
+        .action-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .action-item input[type="text"] {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 0;
+            font-size: 0.9em;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-primary);
+            min-width: 0;
+        }
+
+        .action-item input[type="text"]:focus { outline: none; }
+        .action-item input[type="text"]::placeholder { color: var(--text-muted); }
+
+        .action-item.completed { opacity: 0.55; }
+        .action-item.completed input[type="text"] {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .action-due-date {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .action-due-date input[type="date"] {
+            background: rgba(124, 140, 245, 0.08);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.76em;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--accent-bright);
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 130px;
+        }
+
+        .action-due-date input[type="date"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        .action-due-date input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.7) sepia(0.5) hue-rotate(200deg);
+            cursor: pointer;
+        }
+
+        .action-due-date-label {
+            font-size: 0.7em;
+            color: var(--text-muted);
+        }
+
+        .remove-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.1em;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: all 0.15s;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .remove-action-btn:hover {
+            color: var(--danger);
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .add-action-btn {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px dashed var(--border-hover);
+            padding: 8px 14px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.82em;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .add-action-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent-bright);
+            background: var(--accent-soft);
+        }
+
+        /* Diary */
+        .diary-section {
+            margin-top: 18px;
+            padding: 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+        }
+
+        .diary-section h4 {
+            margin-bottom: 8px;
+            color: var(--accent-bright);
+            font-size: 0.82em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .diary-section textarea {
+            width: 100%;
+            min-height: 90px;
+            padding: 10px;
+            background: rgba(16, 18, 35, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            resize: vertical;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88em;
+            color: var(--text-primary);
+            line-height: 1.5;
+            transition: all 0.2s;
+        }
+
+        .diary-section textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        .diary-section textarea::placeholder { color: var(--text-muted); }
+
+        /* Links Section */
+        .links-section {
+            margin-bottom: 20px;
+        }
+
+        .links-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            transition: all 0.2s;
+        }
+
+        .link-item:hover { border-color: var(--border-hover); }
+
+        .link-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-soft);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+
+        .link-info { flex: 1; min-width: 0; }
+
+        .link-name {
+            font-size: 0.88em;
+            font-weight: 500;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .link-url {
+            font-size: 0.75em;
+            color: var(--accent-bright);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-decoration: none;
+        }
+
+        .link-url:hover { text-decoration: underline; }
+
+        .link-remove-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1em;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+
+        .link-remove-btn:hover {
+            color: var(--danger);
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .add-link-form {
+            display: none;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .add-link-form.visible {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .add-link-form input {
+            flex: 1;
+            min-width: 120px;
+            padding: 9px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            font-size: 0.85em;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .add-link-form input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        .add-link-form input::placeholder { color: var(--text-muted); }
+
+        .add-link-form button {
+            padding: 9px 18px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.82em;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid;
+        }
+
+        .add-link-save {
+            background: var(--accent);
+            border-color: var(--accent) !important;
+            color: #fff;
+        }
+
+        .add-link-save:hover { background: var(--accent-bright); }
+
+        .add-link-cancel {
+            background: transparent;
+            border-color: var(--border-hover) !important;
+            color: var(--text-secondary);
+        }
+
+        .add-link-cancel:hover { background: var(--accent-soft); color: var(--text-primary); }
+
+        .add-link-toggle {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px dashed var(--border-hover);
+            padding: 8px 14px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.82em;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .add-link-toggle:hover {
+            border-color: var(--accent);
+            color: var(--accent-bright);
+            background: var(--accent-soft);
+        }
+
+        .empty-links {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+
+        /* Notes */
+        .notes-section { margin-top: 20px; }
+
+        .notes-section textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            resize: vertical;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all 0.2s;
+        }
+
+        .notes-section textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        .notes-section textarea::placeholder { color: var(--text-muted); }
+
+        /* Calendar */
+        .calendar-section { position: sticky; top: 20px; }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .calendar-header h3 {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 6px;
+        }
+
+        .calendar-nav button {
+            background: var(--accent-soft);
+            border: 1px solid var(--border-subtle);
+            color: var(--accent-bright);
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .calendar-nav button:hover {
+            background: rgba(124, 140, 245, 0.2);
+            border-color: var(--accent);
+        }
+
+        .calendar-month {
+            text-align: center;
+            font-weight: 600;
+            color: var(--accent-bright);
+            margin-bottom: 10px;
+            font-size: 0.92em;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-size: 0.7em;
+            color: var(--text-secondary);
+            padding: 6px 2px;
+            font-weight: 600;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            background: rgba(30, 32, 55, 0.4);
+            border: 1px solid transparent;
+            gap: 2px;
+        }
+
+        .calendar-day:hover {
+            background: rgba(124, 140, 245, 0.15);
+            border-color: var(--border-hover);
+        }
+
+        .calendar-day.other-month {
+            color: var(--text-muted);
+            background: rgba(30, 32, 55, 0.15);
+        }
+
+        .calendar-day.today {
+            background: rgba(124, 140, 245, 0.25);
+            border-color: var(--accent);
+            font-weight: 700;
+            color: var(--accent-bright);
+        }
+
+        .calendar-day.presentation-date {
+            background: rgba(251, 191, 36, 0.2);
+            border: 2px solid var(--warning);
+            font-weight: 700;
+        }
+
+        .calendar-day .day-number { line-height: 1; }
+
+        .calendar-day .task-dots {
+            display: flex;
+            gap: 2px;
+            position: absolute;
+            bottom: 3px;
+        }
+
+        .task-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .task-dot.completed-dot { background: var(--success); }
+
+        .calendar-legend {
+            display: flex;
+            gap: 14px;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.7em;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.today-dot { background: var(--accent); border: 1px solid var(--accent-bright); }
+        .legend-dot.task-legend { background: var(--accent); }
+        .legend-dot.done-legend { background: var(--success); }
+        .legend-dot.pres-legend { background: var(--warning); }
+
+        /* Day popup */
+        .day-popup {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 22, 40, 0.98);
+            border: 1px solid var(--border-hover);
+            border-radius: 8px;
+            padding: 8px 10px;
+            min-width: 160px;
+            z-index: 100;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .calendar-day:hover .day-popup { display: block; }
+
+        .day-popup-title {
+            font-size: 0.72em;
+            font-weight: 600;
+            color: var(--accent-bright);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .day-popup-item {
+            font-size: 0.75em;
+            color: var(--text-primary);
+            padding: 3px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .day-popup-item:last-child { border-bottom: none; }
+
+        .day-popup-item.done-task { color: var(--text-muted); text-decoration: line-through; }
+
+        /* Todo List */
+        .todo-section { margin-top: 0; }
+
+        .todo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .todo-header h3 {
+            font-size: 1em;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .todo-count {
+            font-size: 0.8em;
+            color: var(--accent-bright);
+            font-weight: 600;
+        }
+
+        .todo-list {
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(30, 32, 55, 0.4);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            transition: all 0.2s;
+        }
+
+        .todo-item:hover {
+            background: rgba(124, 140, 245, 0.08);
+            border-color: var(--border-hover);
+        }
+
+        .todo-item input[type="checkbox"] {
+            margin-top: 2px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .todo-content { flex: 1; font-size: 0.85em; min-width: 0; }
+        .todo-text { color: var(--text-primary); margin-bottom: 3px; }
+        .todo-item.completed .todo-text { text-decoration: line-through; color: var(--text-muted); }
+        .todo-step { font-size: 0.75em; color: var(--accent-bright); }
+        .todo-due { font-size: 0.72em; color: var(--warning); margin-top: 2px; }
+        .todo-due.overdue { color: var(--danger); }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 16px;
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+
+        /* Save button */
+        .save-btn {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 13px 24px;
+            border-radius: var(--radius);
+            font-size: 0.88em;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transition: all 0.2s;
+            z-index: 1000;
+        }
+
+        .save-btn:hover {
+            background: var(--accent-bright);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(124, 140, 245, 0.5);
+        }
+
+        .save-notification {
+            position: fixed;
+            top: 28px;
+            right: 28px;
+            background: rgba(16, 18, 35, 0.96);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--success);
+            color: var(--success);
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+            font-size: 0.88em;
+            font-weight: 500;
+        }
+
+        .save-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Reset button */
+        .reset-btn {
+            position: fixed;
+            bottom: 28px;
+            right: 180px;
+            background: rgba(248, 113, 113, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            padding: 13px 20px;
+            border-radius: var(--radius);
+            font-size: 0.82em;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 1000;
+        }
+
+        .reset-btn:hover {
+            background: rgba(248, 113, 113, 0.25);
+            border-color: var(--danger);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+            .sidebar { order: -1; }
+            .calendar-section { position: static; }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 14px; }
+            .header h1 { font-size: 1.6em; }
+            .step-header { flex-direction: column; align-items: flex-start; }
+            .complete-step-btn { width: 100%; }
+            .save-btn { bottom: 16px; right: 16px; padding: 11px 18px; }
+            .reset-btn { bottom: 16px; right: 150px; padding: 11px 14px; }
+            .progress-stats { flex-direction: column; gap: 8px; }
+            .info-card-display { grid-template-columns: 1fr; }
+            .action-item { flex-wrap: wrap; }
+            .action-due-date { width: 100%; margin-left: 28px; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(10, 12, 25, 0.4); }
+        ::-webkit-scrollbar-thumb { background: rgba(124, 140, 245, 0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(124, 140, 245, 0.35); }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step { animation: fadeInUp 0.35s ease forwards; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <div class="header">
+                <h1>Bluesky Creativity Project</h1>
+                <p>Interactive project planner and working diary</p>
+            </div>
+
+            <!-- Project Info Form -->
+            <div class="card project-info" id="projectInfoCard">
+                <div class="project-info-form" id="projectInfoForm">
+                    <div class="input-group">
+                        <label for="studentName">Student Name</label>
+                        <input type="text" id="studentName" placeholder="Enter your name" />
+                    </div>
+                    <div class="input-group">
+                        <label for="projectName">Project Name</label>
+                        <input type="text" id="projectName" placeholder="Enter your project name" />
+                    </div>
+                    <div class="input-group">
+                        <label for="projectRationale">Project Rationale</label>
+                        <input type="text" id="projectRationale" placeholder="What's your project about?" />
+                    </div>
+                    <div class="input-group">
+                        <label for="presentationDate">Presentation Date</label>
+                        <input type="date" id="presentationDate" />
+                    </div>
+                    <button class="confirm-info-btn" onclick="confirmProjectInfo()">Confirm Project Info</button>
+                </div>
+
+                <div class="project-info-display" id="projectInfoDisplay">
+                    <div class="info-card-display">
+                        <div class="info-item">
+                            <div class="info-item-label">Student</div>
+                            <div class="info-item-value" id="displayName">—</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-item-label">Presentation Date</div>
+                            <div class="info-item-value" id="displayDate">—</div>
+                        </div>
+                        <div class="info-item full-width">
+                            <div class="info-item-label">Project</div>
+                            <div class="info-item-value" id="displayProject">—</div>
+                        </div>
+                        <div class="info-item full-width">
+                            <div class="info-item-label">Rationale</div>
+                            <div class="info-item-value" id="displayRationale">—</div>
+                        </div>
+                    </div>
+                    <button class="edit-info-btn" onclick="editProjectInfo()">✎ Edit Info</button>
+                </div>
+            </div>
+
+            <!-- Progress -->
+            <div class="card progress-section">
+                <div class="section-title">Project Progress</div>
+                <div class="progress-stats">
+                    <div class="stat">
+                        <div class="stat-label">Steps</div>
+                        <div class="stat-value" id="stepsComplete">0/6</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Action Items</div>
+                        <div class="stat-value" id="tasksComplete">0/0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Overall</div>
+                        <div class="stat-value" id="overallPercent">0%</div>
+                    </div>
+                </div>
+                <div class="progress-bar-outer">
+                    <div class="progress-bar-fill" id="progressBar"></div>
+                    <div class="progress-bar-text" id="progressText">0%</div>
+                </div>
+            </div>
+
+            <!-- Steps -->
+            <div id="stepsContainer"></div>
+
+            <!-- Links -->
+            <div class="card links-section">
+                <div class="links-header">
+                    <div class="section-title" style="margin-bottom:0">Working Files &amp; Links</div>
+                </div>
+                <div class="links-list" id="linksList"></div>
+                <div class="add-link-form" id="addLinkForm">
+                    <input type="text" id="linkNameInput" placeholder="Link name (e.g. Research Doc)" />
+                    <input type="text" id="linkUrlInput" placeholder="URL (e.g. https://docs.google.com/...)" />
+                    <button class="add-link-save" onclick="saveLink()">Add</button>
+                    <button class="add-link-cancel" onclick="toggleAddLink()">Cancel</button>
+                </div>
+                <button class="add-link-toggle" id="addLinkToggle" onclick="toggleAddLink()">+ Add Link</button>
+            </div>
+
+            <!-- Notes -->
+            <div class="card notes-section">
+                <div class="section-title">Notes &amp; Reminders</div>
+                <textarea id="generalNotes" placeholder="General notes, ideas, and reminders for your project..."></textarea>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="card calendar-section">
+                <div class="calendar-header">
+                    <h3>Calendar</h3>
+                    <div class="calendar-nav">
+                        <button onclick="changeMonth(-1)">‹</button>
+                        <button onclick="changeMonth(1)">›</button>
+                    </div>
+                </div>
+                <div class="calendar-month" id="calendarMonth"></div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+                <div class="calendar-legend">
+                    <div class="legend-item"><div class="legend-dot today-dot"></div> Today</div>
+                    <div class="legend-item"><div class="legend-dot task-legend"></div> Due</div>
+                    <div class="legend-item"><div class="legend-dot done-legend"></div> Done</div>
+                    <div class="legend-item"><div class="legend-dot pres-legend"></div> Present</div>
+                </div>
+            </div>
+
+            <div class="card todo-section">
+                <div class="todo-header">
+                    <h3>All Tasks</h3>
+                    <span class="todo-count" id="todoCount">0 remaining</span>
+                </div>
+                <div class="todo-list" id="todoList"></div>
+            </div>
+        </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetAll()">Reset All</button>
+    <button class="save-btn" onclick="saveProgress()">💾 Save Progress</button>
+    <div class="save-notification" id="saveNotification">✓ Progress Saved</div>
+
+    <script>
+        const steps = [
+            { id: 1, title: "Empathize, Define, and Research", duration: "1–2 hours", actionItems: 3 },
+            { id: 2, title: "Research, Divergent Thinking, and Ideate", duration: "1–2 hours", actionItems: 3 },
+            { id: 3, title: "Convergent Thinking and Refining Design", duration: "1–2 hours", actionItems: 3 },
+            { id: 4, title: "Prototype", duration: "2–3 hours", actionItems: 3 },
+            { id: 5, title: "Test", duration: "1–2 hours", actionItems: 2 },
+            { id: 6, title: "Create Presentation and Write One-Page Summary", duration: "Variable", actionItems: 2 }
+        ];
+
+        let currentCalendarDate = new Date();
+
+        function getData() {
+            return JSON.parse(localStorage.getItem('blueskyProject') || '{}');
+        }
+
+        function setData(data) {
+            localStorage.setItem('blueskyProject', JSON.stringify(data));
+        }
+
+        function initializePlanner() {
+            const data = getData();
+            if (!data.steps) { data.steps = {}; setData(data); }
+            if (!data.links) { data.links = []; setData(data); }
+            loadProgress();
+            renderSteps();
+            updateProgress();
+            renderCalendar();
+            updateTodoList();
+            renderLinks();
+            checkProjectInfoState();
+        }
+
+        // ── Project Info ──
+        function checkProjectInfoState() {
+            const data = getData();
+            if (data.infoConfirmed) {
+                showProjectDisplay();
+            }
+        }
+
+        function confirmProjectInfo() {
+            const name = document.getElementById('studentName').value.trim();
+            const project = document.getElementById('projectName').value.trim();
+            const rationale = document.getElementById('projectRationale').value.trim();
+            const date = document.getElementById('presentationDate').value;
+
+            if (!name && !project) {
+                document.getElementById('studentName').focus();
+                return;
+            }
+
+            const data = getData();
+            data.studentName = name;
+            data.projectName = project;
+            data.projectRationale = rationale;
+            data.presentationDate = date;
+            data.infoConfirmed = true;
+            setData(data);
+
+            showProjectDisplay();
+            renderCalendar();
+        }
+
+        function showProjectDisplay() {
+            const data = getData();
+            document.getElementById('displayName').textContent = data.studentName || '—';
+            document.getElementById('displayProject').textContent = data.projectName || '—';
+            document.getElementById('displayRationale').textContent = data.projectRationale || '—';
+            document.getElementById('displayDate').textContent = data.presentationDate
+                ? new Date(data.presentationDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' })
+                : '—';
+
+            document.getElementById('projectInfoForm').classList.add('hidden');
+            document.getElementById('projectInfoDisplay').classList.add('visible');
+        }
+
+        function editProjectInfo() {
+            document.getElementById('projectInfoForm').classList.remove('hidden');
+            document.getElementById('projectInfoDisplay').classList.remove('visible');
+            const data = getData();
+            data.infoConfirmed = false;
+            setData(data);
+        }
+
+        // ── Steps ──
+        function renderSteps() {
+            const container = document.getElementById('stepsContainer');
+            container.innerHTML = '';
+
+            steps.forEach((step, i) => {
+                const stepData = getStepData(step.id);
+                const div = document.createElement('div');
+                div.className = `step ${stepData.completed ? 'completed' : ''}`;
+                div.id = `step-${step.id}`;
+                div.style.animationDelay = `${i * 0.06}s`;
+
+                div.innerHTML = `
+                    <div class="step-header">
+                        <div class="step-title-group">
+                            <div class="step-title">
+                                <span class="step-number">${step.id}</span>
+                                ${step.title}
+                            </div>
+                            <div class="step-duration">${step.duration}</div>
+                        </div>
+                        <button class="complete-step-btn" onclick="toggleStepCompletion(${step.id})">
+                            ${stepData.completed ? '✓ Completed' : 'Mark Complete'}
+                        </button>
+                    </div>
+                    <div class="action-items" id="actions-${step.id}">
+                        ${renderActionItems(step.id, stepData.actions)}
+                    </div>
+                    <button class="add-action-btn" onclick="addActionItem(${step.id})">+ Add Action Item</button>
+                    <div class="diary-section">
+                        <h4>Notes &amp; Progress</h4>
+                        <textarea id="diary-${step.id}" placeholder="Record your thoughts, progress, challenges, and ideas for this step...">${stepData.diary || ''}</textarea>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            addAutoSaveListeners();
+        }
+
+        function renderActionItems(stepId, actions) {
+            return actions.map((action, index) => `
+                <div class="action-item ${action.completed ? 'completed' : ''}" id="action-${stepId}-${index}">
+                    <input type="checkbox"
+                           ${action.completed ? 'checked' : ''}
+                           onchange="toggleAction(${stepId}, ${index})" />
+                    <input type="text"
+                           value="${escapeHtml(action.text)}"
+                           placeholder="Describe action item…"
+                           onchange="updateActionText(${stepId}, ${index}, this.value)" />
+                    <div class="action-due-date">
+                        <input type="date"
+                               value="${action.dueDate || ''}"
+                               title="Due date"
+                               onchange="updateActionDueDate(${stepId}, ${index}, this.value)" />
+                    </div>
+                    <button class="remove-action-btn" onclick="removeActionItem(${stepId}, ${index})" title="Remove">×</button>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str || '';
+            return div.innerHTML;
+        }
+
+        function getStepData(stepId) {
+            const data = getData();
+            if (!data.steps) data.steps = {};
+            if (!data.steps[stepId]) {
+                const step = steps.find(s => s.id === stepId);
+                data.steps[stepId] = {
+                    completed: false,
+                    actions: Array(step.actionItems).fill(null).map(() => ({ text: '', completed: false, dueDate: '' })),
+                    diary: ''
+                };
+                setData(data);
+            }
+            // ensure dueDate field exists on older data
+            data.steps[stepId].actions.forEach(a => {
+                if (a.dueDate === undefined) a.dueDate = '';
+            });
+            return data.steps[stepId];
+        }
+
+        function toggleAction(stepId, actionIndex) {
+            const data = getData();
+            data.steps[stepId].actions[actionIndex].completed = !data.steps[stepId].actions[actionIndex].completed;
+            setData(data);
+            const actionDiv = document.getElementById(`action-${stepId}-${actionIndex}`);
+            actionDiv.classList.toggle('completed');
+            updateProgress();
+            updateTodoList();
+            renderCalendar();
+        }
+
+        function updateActionText(stepId, actionIndex, text) {
+            const data = getData();
+            data.steps[stepId].actions[actionIndex].text = text;
+            setData(data);
+            updateProgress();
+            updateTodoList();
+        }
+
+        function updateActionDueDate(stepId, actionIndex, date) {
+            const data = getData();
+            data.steps[stepId].actions[actionIndex].dueDate = date;
+            setData(data);
+            updateTodoList();
+            renderCalendar();
+        }
+
+        function addActionItem(stepId) {
+            const data = getData();
+            data.steps[stepId].actions.push({ text: '', completed: false, dueDate: '' });
+            setData(data);
+            renderSteps();
+            updateProgress();
+            updateTodoList();
+        }
+
+        function removeActionItem(stepId, actionIndex) {
+            const data = getData();
+            data.steps[stepId].actions.splice(actionIndex, 1);
+            setData(data);
+            renderSteps();
+            updateProgress();
+            updateTodoList();
+            renderCalendar();
+        }
+
+        function toggleStepCompletion(stepId) {
+            const data = getData();
+            data.steps[stepId].completed = !data.steps[stepId].completed;
+            setData(data);
+            renderSteps();
+            updateProgress();
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const data = getData();
+            let totalActions = 0;
+            let completedActions = 0;
+            let totalSteps = steps.length;
+            let completedSteps = 0;
+
+            steps.forEach(step => {
+                if (data.steps && data.steps[step.id]) {
+                    if (data.steps[step.id].completed) completedSteps++;
+                    data.steps[step.id].actions.forEach(action => {
+                        if (action.text && action.text.trim()) {
+                            totalActions++;
+                            if (action.completed) completedActions++;
+                        }
+                    });
+                }
+            });
+
+            // Calculate from action items (filled ones only)
+            const percentage = totalActions > 0 ? Math.round((completedActions / totalActions) * 100) : 0;
+
+            const bar = document.getElementById('progressBar');
+            bar.style.width = percentage + '%';
+            if (percentage > 0) bar.classList.add('glow');
+            else bar.classList.remove('glow');
+
+            document.getElementById('progressText').textContent = percentage + '%';
+            document.getElementById('stepsComplete').textContent = `${completedSteps}/${totalSteps}`;
+            document.getElementById('tasksComplete').textContent = `${completedActions}/${totalActions}`;
+            document.getElementById('overallPercent').textContent = percentage + '%';
+        }
+
+        // ── Calendar ──
+        function getAllTaskDates() {
+            const data = getData();
+            const dateMap = {};
+            steps.forEach(step => {
+                if (data.steps && data.steps[step.id]) {
+                    data.steps[step.id].actions.forEach((action, idx) => {
+                        if (action.text && action.dueDate) {
+                            if (!dateMap[action.dueDate]) dateMap[action.dueDate] = [];
+                            dateMap[action.dueDate].push({
+                                text: action.text,
+                                completed: action.completed,
+                                stepId: step.id,
+                                stepTitle: step.title
+                            });
+                        }
+                    });
+                }
+            });
+            return dateMap;
+        }
+
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+            document.getElementById('calendarMonth').textContent = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const prevLastDay = new Date(year, month, 0);
+            const firstDayOfWeek = firstDay.getDay();
+            const lastDate = lastDay.getDate();
+            const prevLastDate = prevLastDay.getDate();
+
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            const dayHeaders = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            dayHeaders.forEach(d => {
+                const h = document.createElement('div');
+                h.className = 'calendar-day-header';
+                h.textContent = d;
+                grid.appendChild(h);
+            });
+
+            const today = new Date();
+            const data = getData();
+            const presDate = data.presentationDate ? new Date(data.presentationDate + 'T00:00:00') : null;
+            const taskDates = getAllTaskDates();
+
+            function formatDateKey(y, m, d) {
+                return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            }
+
+            // Previous month days
+            for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day other-month';
+                day.innerHTML = `<span class="day-number">${prevLastDate - i}</span>`;
+                grid.appendChild(day);
+            }
+
+            // Current month days
+            for (let i = 1; i <= lastDate; i++) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day';
+                const currentDate = new Date(year, month, i);
+                const dateKey = formatDateKey(year, month, i);
+
+                if (currentDate.toDateString() === today.toDateString()) day.classList.add('today');
+                if (presDate && currentDate.toDateString() === presDate.toDateString()) day.classList.add('presentation-date');
+
+                let inner = `<span class="day-number">${i}</span>`;
+
+                // Task dots
+                if (taskDates[dateKey]) {
+                    const tasks = taskDates[dateKey];
+                    const dots = tasks.slice(0, 3).map(t =>
+                        `<div class="task-dot ${t.completed ? 'completed-dot' : ''}"></div>`
+                    ).join('');
+                    inner += `<div class="task-dots">${dots}</div>`;
+
+                    // Popup
+                    const items = tasks.map(t =>
+                        `<div class="day-popup-item ${t.completed ? 'done-task' : ''}">${escapeHtml(t.text)}</div>`
+                    ).join('');
+                    inner += `<div class="day-popup"><div class="day-popup-title">Tasks Due</div>${items}</div>`;
+                }
+
+                if (presDate && currentDate.toDateString() === presDate.toDateString()) {
+                    inner += `<div class="day-popup"><div class="day-popup-title">📅 Presentation Day</div></div>`;
+                }
+
+                day.innerHTML = inner;
+                grid.appendChild(day);
+            }
+
+            // Next month
+            const remaining = 42 - (firstDayOfWeek + lastDate);
+            for (let i = 1; i <= remaining; i++) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day other-month';
+                day.innerHTML = `<span class="day-number">${i}</span>`;
+                grid.appendChild(day);
+            }
+        }
+
+        function changeMonth(dir) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + dir);
+            renderCalendar();
+        }
+
+        // ── Todo ──
+        function updateTodoList() {
+            const data = getData();
+            const todoList = document.getElementById('todoList');
+            const allTasks = [];
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            steps.forEach(step => {
+                if (data.steps && data.steps[step.id]) {
+                    data.steps[step.id].actions.forEach((action, index) => {
+                        if (action.text && action.text.trim()) {
+                            allTasks.push({
+                                stepId: step.id,
+                                stepTitle: step.title,
+                                actionIndex: index,
+                                text: action.text,
+                                completed: action.completed,
+                                dueDate: action.dueDate || ''
+                            });
+                        }
+                    });
+                }
+            });
+
+            const incomplete = allTasks.filter(t => !t.completed);
+            document.getElementById('todoCount').textContent = `${incomplete.length} remaining`;
+
+            if (allTasks.length === 0) {
+                todoList.innerHTML = '<div class="empty-state">No tasks yet. Add action items to your steps to see them here.</div>';
+                return;
+            }
+
+            // Sort: incomplete first, then by due date
+            allTasks.sort((a, b) => {
+                if (a.completed !== b.completed) return a.completed ? 1 : -1;
+                if (a.dueDate && b.dueDate) return a.dueDate.localeCompare(b.dueDate);
+                if (a.dueDate) return -1;
+                if (b.dueDate) return 1;
+                return 0;
+            });
+
+            todoList.innerHTML = allTasks.map(task => {
+                let dueHtml = '';
+                if (task.dueDate) {
+                    const due = new Date(task.dueDate + 'T00:00:00');
+                    const isOverdue = !task.completed && due < today;
+                    const formatted = due.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    dueHtml = `<div class="todo-due ${isOverdue ? 'overdue' : ''}">📅 ${formatted}${isOverdue ? ' — overdue' : ''}</div>`;
+                }
+                return `
+                    <div class="todo-item ${task.completed ? 'completed' : ''}">
+                        <input type="checkbox"
+                               ${task.completed ? 'checked' : ''}
+                               onchange="toggleAction(${task.stepId}, ${task.actionIndex})" />
+                        <div class="todo-content">
+                            <div class="todo-text">${escapeHtml(task.text)}</div>
+                            <div class="todo-step">Step ${task.stepId}: ${task.stepTitle}</div>
+                            ${dueHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ── Links ──
+        function renderLinks() {
+            const data = getData();
+            const links = data.links || [];
+            const list = document.getElementById('linksList');
+
+            if (links.length === 0) {
+                list.innerHTML = '<div class="empty-links">No links added yet. Add links to your working documents and files.</div>';
+                return;
+            }
+
+            list.innerHTML = links.map((link, i) => `
+                <div class="link-item">
+                    <div class="link-icon">🔗</div>
+                    <div class="link-info">
+                        <div class="link-name">${escapeHtml(link.name)}</div>
+                        <a class="link-url" href="${escapeHtml(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.url)}</a>
+                    </div>
+                    <button class="link-remove-btn" onclick="removeLink(${i})" title="Remove">×</button>
+                </div>
+            `).join('');
+        }
+
+        function toggleAddLink() {
+            const form = document.getElementById('addLinkForm');
+            const toggle = document.getElementById('addLinkToggle');
+            if (form.classList.contains('visible')) {
+                form.classList.remove('visible');
+                toggle.style.display = '';
+            } else {
+                form.classList.add('visible');
+                toggle.style.display = 'none';
+                document.getElementById('linkNameInput').focus();
+            }
+        }
+
+        function saveLink() {
+            const name = document.getElementById('linkNameInput').value.trim();
+            let url = document.getElementById('linkUrlInput').value.trim();
+            if (!name || !url) return;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+
+            const data = getData();
+            if (!data.links) data.links = [];
+            data.links.push({ name, url });
+            setData(data);
+
+            document.getElementById('linkNameInput').value = '';
+            document.getElementById('linkUrlInput').value = '';
+            toggleAddLink();
+            renderLinks();
+        }
+
+        function removeLink(index) {
+            const data = getData();
+            data.links.splice(index, 1);
+            setData(data);
+            renderLinks();
+        }
+
+        // ── Save / Load ──
+        function saveProgress() {
+            const data = getData();
+            data.studentName = document.getElementById('studentName').value;
+            data.projectName = document.getElementById('projectName').value;
+            data.projectRationale = document.getElementById('projectRationale').value;
+            data.presentationDate = document.getElementById('presentationDate').value;
+            data.generalNotes = document.getElementById('generalNotes').value;
+
+            steps.forEach(step => {
+                const textarea = document.getElementById(`diary-${step.id}`);
+                if (textarea && data.steps[step.id]) {
+                    data.steps[step.id].diary = textarea.value;
+                }
+            });
+
+            setData(data);
+
+            const notification = document.getElementById('saveNotification');
+            notification.classList.add('show');
+            setTimeout(() => notification.classList.remove('show'), 2000);
+
+            renderCalendar();
+        }
+
+        function loadProgress() {
+            const data = getData();
+            if (data.studentName) document.getElementById('studentName').value = data.studentName;
+            if (data.projectName) document.getElementById('projectName').value = data.projectName;
+            if (data.projectRationale) document.getElementById('projectRationale').value = data.projectRationale;
+            if (data.presentationDate) document.getElementById('presentationDate').value = data.presentationDate;
+            if (data.generalNotes) document.getElementById('generalNotes').value = data.generalNotes;
+        }
+
+        function addAutoSaveListeners() {
+            document.querySelectorAll('input, textarea').forEach(el => {
+                el.addEventListener('change', saveProgress);
+            });
+        }
+
+        function resetAll() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                localStorage.removeItem('blueskyProject');
+                location.reload();
+            }
+        }
+
+        window.onload = initializePlanner;
+        setInterval(saveProgress, 30000);
+    </script>
+</body>
+</html>
