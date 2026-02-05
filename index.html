@@ -1,0 +1,3780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluesky Creativity Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-deep: #0c0e1a;
+            --bg-card: rgba(16, 18, 35, 0.9);
+            --bg-input: rgba(8, 10, 22, 0.7);
+            --border-subtle: rgba(120, 140, 255, 0.12);
+            --border-hover: rgba(120, 140, 255, 0.3);
+            --accent: #7c8cf5;
+            --accent-bright: #a0adff;
+            --accent-glow: rgba(124, 140, 245, 0.4);
+            --accent-soft: rgba(124, 140, 245, 0.1);
+            --text-primary: #e8eaff;
+            --text-secondary: #8b8faa;
+            --text-muted: #565873;
+            --success: #4ade80;
+            --success-soft: rgba(74, 222, 128, 0.15);
+            --warning: #fbbf24;
+            --warning-soft: rgba(251, 191, 36, 0.15);
+            --danger: #f87171;
+            --radius: 10px;
+            --radius-lg: 14px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(180deg, #1a6dc2 0%, #56a5eb 30%, #87ceeb 55%, #b0ddf5 75%, #d4ecfc 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 24px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                url('https://images.unsplash.com/photo-1517483000871-1dbf64a6e1c6?w=1920&q=80') center/cover no-repeat,
+                linear-gradient(180deg, #1a6dc2 0%, #56a5eb 30%, #87ceeb 55%, #b0ddf5 75%, #d4ecfc 100%);
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(8, 10, 20, 0.45);
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content { min-width: 0; }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 28px;
+            padding: 28px 32px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            color: var(--accent-bright);
+            font-size: 0.92em;
+            font-weight: 400;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+
+        /* Project Info */
+        .project-info { margin-bottom: 20px; }
+
+        .project-info-form .input-group {
+            margin-bottom: 14px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8em;
+            color: var(--accent-bright);
+            margin-bottom: 5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .project-info input[type="text"],
+        .project-info input[type="date"] {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            color-scheme: dark;
+        }
+
+        .project-info input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.7) sepia(0.5) hue-rotate(200deg);
+            cursor: pointer;
+            opacity: 1;
+        }
+
+        .project-info input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(16, 18, 35, 0.95);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .project-info input::placeholder { color: var(--text-muted); }
+        .project-info textarea::placeholder { color: var(--text-muted); }
+        .project-info textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(16, 18, 35, 0.95);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .confirm-info-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 11px 28px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.88em;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s ease;
+            margin-top: 6px;
+        }
+
+        .confirm-info-btn:hover {
+            background: var(--accent-bright);
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        /* Project Info Display */
+        .project-info-display {
+            display: none;
+        }
+
+        .project-info-display.visible {
+            display: block;
+        }
+
+        .project-info-form.hidden { display: none; }
+
+        .info-card-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .info-item {
+            padding: 14px 16px;
+            background: var(--accent-soft);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+        }
+
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .info-item-label {
+            font-size: 0.72em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .info-item-value {
+            font-size: 0.95em;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .edit-info-btn {
+            background: transparent;
+            color: var(--accent-bright);
+            border: 1px solid var(--border-hover);
+            padding: 8px 18px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.82em;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s ease;
+            margin-top: 14px;
+        }
+
+        .edit-info-btn:hover {
+            background: var(--accent-soft);
+            border-color: var(--accent);
+        }
+
+        /* Progress Section */
+        .progress-section { margin-bottom: 20px; }
+
+        .section-title {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .progress-stats {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .stat {
+            flex: 1;
+            padding: 14px;
+            background: var(--accent-soft);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .stat-label {
+            font-size: 0.7em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--accent-bright);
+        }
+
+        .progress-bar-outer {
+            background: rgba(30, 32, 55, 0.8);
+            height: 36px;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5b6cf5, #8b9aff, #b0baff);
+            transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            border-radius: 18px;
+            position: relative;
+            min-width: 0;
+        }
+
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+            border-radius: 18px;
+        }
+
+        .progress-bar-fill.glow {
+            box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(124, 140, 245, 0.2);
+        }
+
+        .progress-bar-text {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.88em;
+            z-index: 2;
+            color: var(--text-primary);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+
+        /* Steps */
+        .step {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 16px;
+            transition: all 0.25s ease;
+        }
+
+        .step:hover {
+            border-color: var(--border-hover);
+            box-shadow: 0 4px 24px rgba(124, 140, 245, 0.06);
+        }
+
+        .step.completed {
+            border-color: rgba(74, 222, 128, 0.3);
+            background: rgba(16, 18, 35, 0.95);
+        }
+
+        .step.completed::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--success), transparent);
+        }
+
+        .step { position: relative; overflow: hidden; }
+
+        .step-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 18px;
+            gap: 14px;
+        }
+
+        .step-title-group { flex: 1; }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            background: var(--accent-soft);
+            border: 1px solid var(--border-subtle);
+            border-radius: 50%;
+            font-size: 0.75em;
+            font-weight: 700;
+            color: var(--accent-bright);
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .step.completed .step-number {
+            background: var(--success-soft);
+            border-color: rgba(74, 222, 128, 0.3);
+            color: var(--success);
+        }
+
+        .step-title {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .step-duration {
+            font-size: 0.82em;
+            color: var(--text-secondary);
+        }
+
+        .complete-step-btn {
+            background: var(--accent-soft);
+            color: var(--accent-bright);
+            border: 1px solid var(--border-hover);
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.82em;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .complete-step-btn:hover {
+            background: rgba(124, 140, 245, 0.2);
+            border-color: var(--accent);
+        }
+
+        .step.completed .complete-step-btn {
+            background: var(--success-soft);
+            border-color: rgba(74, 222, 128, 0.3);
+            color: var(--success);
+        }
+
+        /* Action Items */
+        .action-items { margin: 14px 0; }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+            padding: 10px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            transition: all 0.2s ease;
+        }
+
+        .action-item:hover { border-color: var(--border-hover); }
+
+        .action-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .action-item input[type="text"] {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 0;
+            font-size: 0.9em;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-primary);
+            min-width: 0;
+        }
+
+        .action-item input[type="text"]:focus { outline: none; }
+        .action-item input[type="text"]::placeholder { color: var(--text-muted); }
+
+        .action-item.completed { opacity: 0.55; }
+        .action-item.completed input[type="text"] {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .action-due-date {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .action-due-date input[type="date"] {
+            background: rgba(124, 140, 245, 0.08);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.76em;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--accent-bright);
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 130px;
+        }
+
+        .action-due-date input[type="date"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        .action-due-date input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.7) sepia(0.5) hue-rotate(200deg);
+            cursor: pointer;
+        }
+
+        .action-due-date-label {
+            font-size: 0.7em;
+            color: var(--text-muted);
+        }
+
+        .remove-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.1em;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: all 0.15s;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .remove-action-btn:hover {
+            color: var(--danger);
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        .add-action-btn {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px dashed var(--border-hover);
+            padding: 8px 14px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.82em;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .add-action-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent-bright);
+            background: var(--accent-soft);
+        }
+
+        /* Diary */
+        .diary-section {
+            margin-top: 18px;
+            padding: 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+        }
+
+        .diary-section h4 {
+            margin-bottom: 8px;
+            color: var(--accent-bright);
+            font-size: 0.82em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .diary-section textarea {
+            width: 100%;
+            min-height: 90px;
+            padding: 10px;
+            background: rgba(16, 18, 35, 0.6);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            resize: vertical;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88em;
+            color: var(--text-primary);
+            line-height: 1.5;
+            transition: all 0.2s;
+        }
+
+        .diary-section textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        .diary-section textarea::placeholder { color: var(--text-muted); }
+
+        /* Links Section */
+        .links-section {
+            margin-bottom: 20px;
+        }
+
+        .links-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            transition: all 0.2s;
+        }
+
+        .link-item:hover { border-color: var(--border-hover); }
+
+        .link-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-soft);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+
+        .link-info { flex: 1; min-width: 0; }
+
+        .link-name {
+            font-size: 0.88em;
+            font-weight: 500;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .link-url {
+            font-size: 0.75em;
+            color: var(--accent-bright);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-decoration: none;
+        }
+
+        .link-url:hover { text-decoration: underline; }
+
+        .link-remove-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1em;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+
+        .link-remove-btn:hover {
+            color: var(--danger);
+            background: rgba(248, 113, 113, 0.1);
+        }
+
+        /* Step Links */
+        .step-links-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border-subtle);
+        }
+
+        .step-links-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .step-links-title {
+            font-size: 0.78em;
+            font-weight: 600;
+            color: var(--accent-bright);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .step-link-add-btn {
+            background: var(--accent-soft);
+            border: 1px solid var(--border-subtle);
+            color: var(--accent-bright);
+            padding: 3px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.72em;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.15s;
+        }
+
+        .step-link-add-btn:hover {
+            background: rgba(124, 140, 245, 0.2);
+            border-color: var(--accent);
+        }
+
+        .step-link-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            background: rgba(124, 140, 245, 0.05);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            margin-bottom: 4px;
+            transition: all 0.15s;
+        }
+
+        .step-link-item:hover { border-color: var(--border-hover); }
+
+        .step-link-icon {
+            font-size: 0.75em;
+            flex-shrink: 0;
+        }
+
+        .step-link-info { flex: 1; min-width: 0; }
+
+        .step-link-name {
+            font-size: 0.8em;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .step-link-url {
+            font-size: 0.68em;
+            color: var(--accent-bright);
+            text-decoration: none;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .step-link-url:hover { text-decoration: underline; }
+
+        .step-link-remove {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.85em;
+            padding: 2px;
+            border-radius: 3px;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+
+        .step-link-remove:hover { color: var(--danger); }
+
+        .step-link-form {
+            display: none;
+            gap: 6px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .step-link-form.visible { display: flex; }
+
+        .step-link-form input {
+            flex: 1;
+            min-width: 100px;
+            padding: 7px 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            font-size: 0.8em;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .step-link-form input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .step-link-form input::placeholder { color: var(--text-muted); }
+
+        .step-link-form button {
+            padding: 7px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.78em;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            border: none;
+            transition: all 0.15s;
+        }
+
+        .step-link-save { background: var(--accent); color: #fff; }
+        .step-link-save:hover { background: var(--accent-bright); }
+        .step-link-cancel { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-subtle) !important; }
+
+        .step-links-empty {
+            font-size: 0.75em;
+            color: var(--text-muted);
+            font-style: italic;
+            padding: 4px 0;
+        }
+
+        /* Email Reminder */
+        .reminder-section {
+            margin-top: 16px;
+            padding: 16px 18px;
+            background: rgba(124, 140, 245, 0.06);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+        }
+
+        .reminder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .reminder-title {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--accent-bright);
+        }
+
+        .reminder-input-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .reminder-input-row input[type="email"] {
+            flex: 1;
+            min-width: 180px;
+            padding: 9px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            font-size: 0.85em;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .reminder-input-row input[type="email"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        .reminder-input-row input::placeholder { color: var(--text-muted); }
+
+        .reminder-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.82em;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .reminder-btn.primary { background: var(--accent); color: #fff; }
+        .reminder-btn.primary:hover { background: var(--accent-bright); }
+        .reminder-btn.secondary {
+            background: var(--accent-soft);
+            color: var(--accent-bright);
+            border: 1px solid var(--border-subtle);
+        }
+        .reminder-btn.secondary:hover { border-color: var(--accent); }
+
+        .reminder-preview {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.8em;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+        }
+
+        .reminder-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .reminder-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8em;
+            color: var(--text-secondary);
+        }
+
+        .reminder-option select {
+            padding: 5px 8px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            font-size: 1em;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--accent-bright);
+            cursor: pointer;
+        }
+
+        .reminder-saved-note {
+            font-size: 0.75em;
+            color: var(--success);
+            margin-top: 6px;
+        }
+
+        .add-link-form {
+            display: none;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .add-link-form.visible {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .add-link-form input {
+            flex: 1;
+            min-width: 120px;
+            padding: 9px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            font-size: 0.85em;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .add-link-form input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        .add-link-form input::placeholder { color: var(--text-muted); }
+
+        .add-link-form button {
+            padding: 9px 18px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.82em;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid;
+        }
+
+        .add-link-save {
+            background: var(--accent);
+            border-color: var(--accent) !important;
+            color: #fff;
+        }
+
+        .add-link-save:hover { background: var(--accent-bright); }
+
+        .add-link-cancel {
+            background: transparent;
+            border-color: var(--border-hover) !important;
+            color: var(--text-secondary);
+        }
+
+        .add-link-cancel:hover { background: var(--accent-soft); color: var(--text-primary); }
+
+        .add-link-toggle {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px dashed var(--border-hover);
+            padding: 8px 14px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.82em;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .add-link-toggle:hover {
+            border-color: var(--accent);
+            color: var(--accent-bright);
+            background: var(--accent-soft);
+        }
+
+        .empty-links {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+
+        /* Notes */
+        .notes-section { margin-top: 20px; }
+
+        .notes-section textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            resize: vertical;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9em;
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all 0.2s;
+        }
+
+        .notes-section textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        .notes-section textarea::placeholder { color: var(--text-muted); }
+
+        /* Calendar */
+        .calendar-section { position: sticky; top: 20px; }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .calendar-header h3 {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 6px;
+        }
+
+        .calendar-nav button {
+            background: var(--accent-soft);
+            border: 1px solid var(--border-subtle);
+            color: var(--accent-bright);
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .calendar-nav button:hover {
+            background: rgba(124, 140, 245, 0.2);
+            border-color: var(--accent);
+        }
+
+        .calendar-month {
+            text-align: center;
+            font-weight: 600;
+            color: var(--accent-bright);
+            margin-bottom: 10px;
+            font-size: 0.92em;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-size: 0.7em;
+            color: var(--text-secondary);
+            padding: 6px 2px;
+            font-weight: 600;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            background: rgba(30, 32, 55, 0.4);
+            border: 1px solid transparent;
+            gap: 2px;
+        }
+
+        .calendar-day:hover {
+            background: rgba(124, 140, 245, 0.15);
+            border-color: var(--border-hover);
+        }
+
+        .calendar-day.other-month {
+            color: var(--text-muted);
+            background: rgba(30, 32, 55, 0.15);
+        }
+
+        .calendar-day.today {
+            background: rgba(124, 140, 245, 0.25);
+            border-color: var(--accent);
+            font-weight: 700;
+            color: var(--accent-bright);
+        }
+
+        .calendar-day.presentation-date {
+            background: rgba(251, 191, 36, 0.2);
+            border: 2px solid var(--warning);
+            font-weight: 700;
+        }
+
+        .calendar-day .day-number { line-height: 1; }
+
+        .calendar-day .task-dots {
+            display: flex;
+            gap: 2px;
+            position: absolute;
+            bottom: 3px;
+        }
+
+        .task-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        .task-dot.completed-dot { background: var(--success); }
+
+        .calendar-legend {
+            display: flex;
+            gap: 14px;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-subtle);
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.7em;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.today-dot { background: var(--accent); border: 1px solid var(--accent-bright); }
+        .legend-dot.task-legend { background: var(--accent); }
+        .legend-dot.done-legend { background: var(--success); }
+        .legend-dot.pres-legend { background: var(--warning); }
+
+        /* Day popup */
+        .day-popup {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 22, 40, 0.98);
+            border: 1px solid var(--border-hover);
+            border-radius: 8px;
+            padding: 8px 10px;
+            min-width: 160px;
+            z-index: 100;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            pointer-events: none;
+        }
+
+        .calendar-day:hover .day-popup { display: block; }
+
+        .day-popup-title {
+            font-size: 0.72em;
+            font-weight: 600;
+            color: var(--accent-bright);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .day-popup-item {
+            font-size: 0.75em;
+            color: var(--text-primary);
+            padding: 3px 0;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .day-popup-item:last-child { border-bottom: none; }
+        .day-popup-item.done-task { color: var(--text-muted); text-decoration: line-through; }
+
+        /* Calendar view toggle */
+        .calendar-view-toggle {
+            display: flex;
+            gap: 4px;
+            background: rgba(30, 32, 55, 0.6);
+            border-radius: 8px;
+            padding: 3px;
+        }
+
+        .cal-toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.72em;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .cal-toggle-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .cal-toggle-btn:not(.active):hover {
+            background: rgba(124, 140, 245, 0.15);
+            color: var(--accent-bright);
+        }
+
+        /* Week View */
+        .week-view { display: none; }
+        .week-view.visible { display: block; }
+        .month-view.hidden { display: none; }
+
+        .week-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .week-nav-label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: var(--accent-bright);
+            text-align: center;
+        }
+
+        .week-day-card {
+            padding: 10px 12px;
+            background: rgba(30, 32, 55, 0.4);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .week-day-card:hover {
+            border-color: var(--border-hover);
+            background: rgba(124, 140, 245, 0.08);
+        }
+
+        .week-day-card.is-today {
+            border-color: var(--accent);
+            background: rgba(124, 140, 245, 0.12);
+        }
+
+        .week-day-card.is-presentation {
+            border-color: var(--warning);
+            background: rgba(251, 191, 36, 0.08);
+        }
+
+        .week-day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .week-day-name {
+            font-size: 0.82em;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .week-day-date {
+            font-size: 0.72em;
+            color: var(--text-secondary);
+        }
+
+        .week-day-card.is-today .week-day-name { color: var(--accent-bright); }
+        .week-day-card.is-today .week-day-date { color: var(--accent); }
+
+        .week-task-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 0;
+            font-size: 0.78em;
+        }
+
+        .week-task-item + .week-task-item {
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .week-task-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .week-task-dot.pending { background: var(--accent); }
+        .week-task-dot.done { background: var(--success); }
+        .week-task-dot.overdue { background: var(--danger); }
+
+        .week-task-text {
+            flex: 1;
+            color: var(--text-primary);
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .week-task-text.completed-text {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .week-task-step {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .week-empty-day {
+            font-size: 0.75em;
+            color: var(--text-muted);
+            padding: 4px 0;
+            font-style: italic;
+        }
+
+        .week-add-task-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding-top: 6px;
+            margin-top: 4px;
+            border-top: 1px dashed var(--border-subtle);
+        }
+
+        .week-add-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.72em;
+            font-family: 'DM Sans', sans-serif;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+
+        .week-add-btn:hover {
+            color: var(--accent-bright);
+            background: var(--accent-soft);
+        }
+
+        .week-pres-badge {
+            font-size: 0.7em;
+            background: var(--warning-soft);
+            color: var(--warning);
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Day Detail Modal */
+        .day-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(6, 8, 18, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .day-modal-overlay.open {
+            display: flex;
+        }
+
+        .day-modal {
+            background: rgba(16, 18, 35, 0.98);
+            border: 1px solid var(--border-hover);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 480px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+            animation: modalIn 0.2s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .day-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .day-modal-title {
+            font-size: 1em;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .day-modal-subtitle {
+            font-size: 0.78em;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .day-modal-close {
+            background: var(--accent-soft);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+
+        .day-modal-close:hover {
+            background: rgba(248, 113, 113, 0.15);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .day-modal-body {
+            padding: 16px 20px;
+        }
+
+        .day-modal-section-title {
+            font-size: 0.75em;
+            font-weight: 600;
+            color: var(--accent-bright);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .day-modal-task {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            margin-bottom: 6px;
+            transition: all 0.15s;
+        }
+
+        .day-modal-task:hover {
+            border-color: var(--border-hover);
+        }
+
+        .day-modal-task input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .day-modal-task-info { flex: 1; min-width: 0; }
+
+        .day-modal-task-text {
+            font-size: 0.88em;
+            color: var(--text-primary);
+        }
+
+        .day-modal-task.is-done .day-modal-task-text {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .day-modal-task-step {
+            font-size: 0.72em;
+            color: var(--accent-bright);
+            margin-top: 1px;
+        }
+
+        .day-modal-empty {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+
+        .day-modal-add-section {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .day-modal-add-title {
+            font-size: 0.75em;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .day-modal-add-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .day-modal-add-row input[type="text"] {
+            flex: 1;
+            padding: 9px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            font-size: 0.85em;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .day-modal-add-row input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-soft);
+        }
+
+        .day-modal-add-row input[type="text"]::placeholder { color: var(--text-muted); }
+
+        .day-modal-add-row select {
+            padding: 9px 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            font-size: 0.82em;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--accent-bright);
+            cursor: pointer;
+            appearance: auto;
+            max-width: 130px;
+        }
+
+        .day-modal-add-row select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .day-modal-add-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 9px 16px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.82em;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .day-modal-add-btn:hover {
+            background: var(--accent-bright);
+        }
+
+        .day-modal-pres-banner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: var(--warning-soft);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            font-size: 0.85em;
+            color: var(--warning);
+            font-weight: 500;
+        }
+
+        /* Todo List */
+        .todo-section { margin-top: 0; }
+
+        .todo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .todo-header h3 {
+            font-size: 1em;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .todo-count {
+            font-size: 0.8em;
+            color: var(--accent-bright);
+            font-weight: 600;
+        }
+
+        .todo-list {
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(30, 32, 55, 0.4);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            transition: all 0.2s;
+        }
+
+        .todo-item:hover {
+            background: rgba(124, 140, 245, 0.08);
+            border-color: var(--border-hover);
+        }
+
+        .todo-item input[type="checkbox"] {
+            margin-top: 2px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .todo-content { flex: 1; font-size: 0.85em; min-width: 0; }
+        .todo-text { color: var(--text-primary); margin-bottom: 3px; }
+        .todo-item.completed .todo-text { text-decoration: line-through; color: var(--text-muted); }
+        .todo-step { font-size: 0.75em; color: var(--accent-bright); }
+        .todo-due { font-size: 0.72em; color: var(--warning); margin-top: 2px; }
+        .todo-due.overdue { color: var(--danger); }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 16px;
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+
+        /* Save button */
+        .save-btn {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 13px 24px;
+            border-radius: var(--radius);
+            font-size: 0.88em;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transition: all 0.2s;
+            z-index: 1000;
+        }
+
+        .save-btn:hover {
+            background: var(--accent-bright);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(124, 140, 245, 0.5);
+        }
+
+        .save-notification {
+            position: fixed;
+            top: 28px;
+            right: 28px;
+            background: rgba(16, 18, 35, 0.96);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--success);
+            color: var(--success);
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1001;
+            font-size: 0.88em;
+            font-weight: 500;
+        }
+
+        .save-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Reset button */
+        .reset-btn {
+            position: fixed;
+            bottom: 28px;
+            right: 180px;
+            background: rgba(248, 113, 113, 0.15);
+            color: var(--danger);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            padding: 13px 20px;
+            border-radius: var(--radius);
+            font-size: 0.82em;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 1000;
+        }
+
+        .reset-btn:hover {
+            background: rgba(248, 113, 113, 0.25);
+            border-color: var(--danger);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+            .sidebar { order: -1; }
+            .calendar-section { position: static; }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 14px; }
+            .header h1 { font-size: 1.6em; }
+            .step-header { flex-direction: column; align-items: flex-start; }
+            .complete-step-btn { width: 100%; }
+            .save-btn { bottom: 16px; right: 16px; padding: 11px 18px; }
+            .reset-btn { bottom: 16px; right: 150px; padding: 11px 14px; }
+            .progress-stats { flex-direction: column; gap: 8px; }
+            .info-card-display { grid-template-columns: 1fr; }
+            .action-item { flex-wrap: wrap; }
+            .action-due-date { width: 100%; margin-left: 28px; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(10, 12, 25, 0.4); }
+        ::-webkit-scrollbar-thumb { background: rgba(124, 140, 245, 0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(124, 140, 245, 0.35); }
+
+        /* Add to Calendar button */
+        .add-to-cal-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--warning-soft);
+            color: var(--warning);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            padding: 6px 14px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.78em;
+            font-weight: 500;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+        }
+
+        .add-to-cal-btn:hover {
+            background: rgba(251, 191, 36, 0.25);
+            border-color: var(--warning);
+            box-shadow: 0 2px 12px rgba(251, 191, 36, 0.2);
+        }
+
+        /* Export / Submit section */
+        .export-section {
+            margin-top: 20px;
+        }
+
+        .export-section .section-title {
+            margin-bottom: 6px;
+        }
+
+        .export-section .export-desc {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .export-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .export-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 22px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.88em;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .export-btn.primary {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 2px 12px var(--accent-glow);
+        }
+
+        .export-btn.primary:hover {
+            background: var(--accent-bright);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .export-btn.secondary {
+            background: var(--accent-soft);
+            color: var(--accent-bright);
+            border: 1px solid var(--border-hover);
+        }
+
+        .export-btn.secondary:hover {
+            background: rgba(124, 140, 245, 0.2);
+            border-color: var(--accent);
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: #fff !important;
+                color: #1a1a2e !important;
+                padding: 20px !important;
+            }
+            body::before, body::after { display: none !important; }
+            .container {
+                display: block !important;
+                max-width: 100% !important;
+            }
+            .sidebar, .save-btn, .reset-btn, .save-notification,
+            .export-section, .confirm-info-btn, .edit-info-btn,
+            .add-action-btn, .remove-action-btn, .add-link-toggle,
+            .add-link-form, .complete-step-btn, .link-remove-btn,
+            .add-to-cal-btn, .day-modal-overlay, #rubricCard, #emailReminderCard { display: none !important; }
+            .step-link-add-btn, .step-link-form, .step-link-remove { display: none !important; }
+            .card, .step, .header {
+                background: #fff !important;
+                border: 1px solid #ddd !important;
+                backdrop-filter: none !important;
+                color: #1a1a2e !important;
+                break-inside: avoid;
+                page-break-inside: avoid;
+                margin-bottom: 16px;
+            }
+            .header::after { display: none !important; }
+            .header h1 { color: #1a1a2e !important; }
+            .header p { color: #555 !important; }
+            .section-title, .step-title, h3, h4 { color: #1a1a2e !important; }
+            .info-item { background: #f5f5f5 !important; border-color: #ddd !important; }
+            .info-item-label { color: #666 !important; }
+            .info-item-value { color: #1a1a2e !important; }
+            .stat { background: #f5f5f5 !important; border-color: #ddd !important; }
+            .stat-label { color: #666 !important; }
+            .stat-value { color: #2a2a4a !important; }
+            .step-number { background: #eee !important; border-color: #ccc !important; color: #333 !important; }
+            .step-duration { color: #666 !important; }
+            .action-item {
+                background: #fafafa !important;
+                border-color: #ddd !important;
+            }
+            .action-item input[type="text"] { color: #1a1a2e !important; }
+            .action-item.completed input[type="text"] { color: #888 !important; }
+            .action-due-date input[type="date"] { color: #555 !important; background: transparent !important; border-color: #ccc !important; }
+            .diary-section { background: #fafafa !important; border-color: #ddd !important; }
+            .diary-section h4 { color: #333 !important; }
+            .diary-section textarea {
+                background: #fff !important;
+                border-color: #ddd !important;
+                color: #1a1a2e !important;
+            }
+            textarea, input { color: #1a1a2e !important; }
+            .progress-bar-outer { border-color: #ccc !important; background: #eee !important; }
+            .progress-bar-fill { background: linear-gradient(90deg, #5b6cf5, #8b9aff) !important; }
+            .progress-bar-text { color: #fff !important; }
+            .project-info-form.hidden + .project-info-display { display: block !important; }
+            .link-item { background: #fafafa !important; border-color: #ddd !important; }
+            .link-name { color: #1a1a2e !important; }
+            .link-url { color: #5b6cf5 !important; }
+            .notes-section textarea { background: #fff !important; border-color: #ddd !important; color: #1a1a2e !important; }
+
+            .print-header {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+                border-bottom: 2px solid #333;
+            }
+            .print-header h2 { font-size: 1.4em; color: #1a1a2e; margin-bottom: 4px; }
+            .print-header p { color: #666; font-size: 0.9em; }
+        }
+
+        .print-header { display: none; }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step { animation: fadeInUp 0.35s ease forwards; }
+    </style>
+</head>
+<body>
+    <div class="print-header" id="printHeader">
+        <h2>Bluesky Creativity Project — Submission</h2>
+        <p id="printSubtitle"></p>
+    </div>
+    <div class="container">
+        <div class="main-content">
+            <div class="header">
+                <h1>Bluesky Creativity Project</h1>
+                <p>Interactive project planner and working diary</p>
+            </div>
+
+            <!-- View-only banner (shown when viewing shared data) -->
+            <div class="card" id="viewOnlyBanner" style="display:none; border-color:rgba(74,222,128,0.4); background:rgba(74,222,128,0.08); margin-bottom:20px;">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                    <div style="font-size:1.4em;">👁️</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:600;color:var(--success);font-size:0.95em;">Viewing Shared Submission</div>
+                        <div style="font-size:0.82em;color:var(--text-secondary);" id="viewOnlyDesc">This is a read-only view of a student's project planner.</div>
+                    </div>
+                    <button class="export-btn secondary" onclick="clearSharedView()" style="font-size:0.8em;padding:8px 14px;">✕ Exit Shared View</button>
+                </div>
+            </div>
+
+            <!-- Project Info Form -->
+            <div class="card project-info" id="projectInfoCard">
+                <div class="project-info-form" id="projectInfoForm">
+                    <div class="input-group">
+                        <label for="studentName">Student Name</label>
+                        <input type="text" id="studentName" placeholder="Enter your name" />
+                    </div>
+                    <div class="input-group">
+                        <label for="projectName">Project Name</label>
+                        <input type="text" id="projectName" placeholder="Enter your project name" />
+                    </div>
+                    <div class="input-group">
+                        <label for="projectRationale">Project Rationale</label>
+                        <textarea id="projectRationale" placeholder="Write a 4-6 sentence rationale: justify the project, state the problem, explain your connection, and reference course content." rows="5" style="width:100%;padding:11px 14px;background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:var(--radius);font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text-primary);resize:vertical;line-height:1.6;transition:all 0.2s ease;"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="presentationDate">Presentation Date</label>
+                        <input type="date" id="presentationDate" />
+                    </div>
+                    <button class="confirm-info-btn" onclick="confirmProjectInfo()">Confirm Project Info</button>
+                </div>
+
+                <div class="project-info-display" id="projectInfoDisplay">
+                    <div class="info-card-display">
+                        <div class="info-item">
+                            <div class="info-item-label">Student</div>
+                            <div class="info-item-value" id="displayName">—</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-item-label">Presentation Date</div>
+                            <div class="info-item-value" id="displayDate">—</div>
+                            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">
+                                <button class="add-to-cal-btn" id="addToCalBtn" onclick="addToCalendar()" style="display:none">📅 Add to Calendar</button>
+                                <button class="add-to-cal-btn" id="changeDateBtn" onclick="toggleInlineDateEdit()" style="background:var(--accent-soft);color:var(--accent-bright);border-color:var(--border-hover);">✎ Change Date</button>
+                            </div>
+                            <div id="inlineDateEdit" style="display:none;margin-top:8px;">
+                                <div style="display:flex;gap:6px;align-items:center;">
+                                    <input type="date" id="inlineDateInput" style="flex:1;padding:8px 12px;background:var(--bg-input);border:1px solid var(--accent);border-radius:var(--radius);font-size:0.88em;font-family:'DM Sans',sans-serif;color:var(--text-primary);color-scheme:dark;" />
+                                    <button class="add-to-cal-btn" onclick="saveInlineDate()" style="background:var(--accent);color:#fff;border-color:var(--accent);">Save</button>
+                                    <button class="add-to-cal-btn" onclick="toggleInlineDateEdit()" style="background:transparent;color:var(--text-secondary);border-color:var(--border-hover);">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-item full-width">
+                            <div class="info-item-label">Project</div>
+                            <div class="info-item-value" id="displayProject">—</div>
+                        </div>
+                        <div class="info-item full-width">
+                            <div class="info-item-label">Rationale</div>
+                            <div class="info-item-value" id="displayRationale">—</div>
+                        </div>
+                    </div>
+                    <button class="edit-info-btn" onclick="editProjectInfo()">✎ Edit Info</button>
+                </div>
+            </div>
+
+            <!-- Progress -->
+            <div class="card progress-section">
+                <div class="section-title">Project Progress</div>
+                <div class="progress-stats">
+                    <div class="stat">
+                        <div class="stat-label">Steps</div>
+                        <div class="stat-value" id="stepsComplete">0/6</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Action Items</div>
+                        <div class="stat-value" id="tasksComplete">0/0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Overall</div>
+                        <div class="stat-value" id="overallPercent">0%</div>
+                    </div>
+                </div>
+                <div class="progress-bar-outer">
+                    <div class="progress-bar-fill" id="progressBar"></div>
+                    <div class="progress-bar-text" id="progressText">0%</div>
+                </div>
+            </div>
+
+            <!-- Rubric Self-Check -->
+            <div class="card" id="rubricCard" style="margin-bottom:20px;">
+                <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
+                    <span>📋 Rubric Self-Check</span>
+                    <button onclick="document.getElementById('rubricBody').style.display=document.getElementById('rubricBody').style.display==='none'?'':'none'" style="background:var(--accent-soft);border:1px solid var(--border-subtle);color:var(--accent-bright);padding:5px 14px;border-radius:6px;cursor:pointer;font-size:0.78em;font-family:'DM Sans',sans-serif;font-weight:500;">Toggle</button>
+                </div>
+                <div id="rubricBody" style="margin-top:12px;">
+                    <div style="font-size:0.82em;color:var(--text-secondary);margin-bottom:14px;line-height:1.5;">Check each item as you complete it. Aim for "Outstanding" (5/5) on every criterion.</div>
+                    <div id="rubricChecklist"></div>
+                    <div style="margin-top:14px;padding:12px 16px;background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:var(--radius);display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-size:0.85em;color:var(--text-secondary);">Rubric Readiness</span>
+                        <span id="rubricScore" style="font-size:1.05em;font-weight:600;color:var(--accent-bright);">0 / 9</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Steps -->
+            <div id="stepsContainer"></div>
+
+            <!-- Links -->
+            <div class="card links-section">
+                <div class="links-header">
+                    <div class="section-title" style="margin-bottom:0">Working Files &amp; Links</div>
+                </div>
+                <div class="links-list" id="linksList"></div>
+                <div class="add-link-form" id="addLinkForm">
+                    <input type="text" id="linkNameInput" placeholder="Link name (e.g. Research Doc)" />
+                    <input type="text" id="linkUrlInput" placeholder="URL (e.g. https://docs.google.com/...)" />
+                    <button class="add-link-save" onclick="saveLink()">Add</button>
+                    <button class="add-link-cancel" onclick="toggleAddLink()">Cancel</button>
+                </div>
+                <button class="add-link-toggle" id="addLinkToggle" onclick="toggleAddLink()">+ Add Link</button>
+            </div>
+
+            <!-- Notes -->
+            <div class="card notes-section">
+                <div class="section-title">Notes &amp; Reminders</div>
+                <textarea id="generalNotes" placeholder="General notes, ideas, and reminders for your project..."></textarea>
+            </div>
+
+            <!-- Email Reminder -->
+            <div class="card" id="emailReminderCard">
+                <div class="section-title">📧 Email Task Reminders</div>
+                <div style="font-size:0.82em;color:var(--text-secondary);margin-bottom:14px;line-height:1.5;">
+                    Send yourself an email digest of upcoming tasks. Choose a timeframe and we'll compose the email for you.
+                </div>
+                <div class="reminder-input-row">
+                    <input type="email" id="reminderEmail" placeholder="Your email address…" />
+                    <div class="reminder-option">
+                        <span>Show tasks due within</span>
+                        <select id="reminderRange">
+                            <option value="1">1 day</option>
+                            <option value="3">3 days</option>
+                            <option value="7" selected>7 days</option>
+                            <option value="14">14 days</option>
+                            <option value="30">30 days</option>
+                            <option value="all">All tasks</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+                    <button class="reminder-btn primary" onclick="sendEmailReminder()">✉️ Open in Email</button>
+                    <button class="reminder-btn secondary" onclick="copyReminderText()">📋 Copy to Clipboard</button>
+                    <button class="reminder-btn secondary" onclick="toggleReminderPreview()">👁️ Preview</button>
+                </div>
+                <div id="reminderPreviewBox" style="display:none;">
+                    <div class="reminder-preview" id="reminderPreviewText"></div>
+                </div>
+                <div id="reminderSavedNote" class="reminder-saved-note" style="display:none;">✓ Email saved — reminder will open in your mail app</div>
+            </div>
+
+            <!-- Export / Submit -->
+            <div class="card export-section" id="exportSection">
+                <div class="section-title">📤 Submit to Instructor</div>
+                <div class="export-desc">
+                    Save your progress, then share with your instructor. <strong>Generate Share Link</strong> creates a URL that contains all your data — your instructor opens it and sees the fully interactive planner with everything you've filled in. No accounts or hosting needed!
+                </div>
+                <div class="export-row">
+                    <button class="export-btn primary" onclick="generateShareLink()">🔗 Generate Share Link</button>
+                    <button class="export-btn secondary" onclick="printForInstructor()">🖨️ Print / Save as PDF</button>
+                    <button class="export-btn secondary" onclick="downloadSnapshot()">📁 Download HTML Snapshot</button>
+                </div>
+                <div id="shareLinkOutput" style="display:none; margin-top:14px;">
+                    <div style="display:flex;gap:8px;align-items:stretch;">
+                        <input type="text" id="shareLinkUrl" readonly style="flex:1;padding:11px 14px;background:var(--bg-input);border:1px solid var(--accent);border-radius:var(--radius);font-size:0.85em;font-family:'DM Sans',sans-serif;color:var(--accent-bright);cursor:text;" />
+                        <button onclick="copyShareLink()" class="export-btn primary" style="padding:11px 18px;white-space:nowrap;" id="copyLinkBtn">📋 Copy</button>
+                    </div>
+                    <div style="font-size:0.78em;color:var(--text-secondary);margin-top:8px;line-height:1.5;">
+                        Send this link to your instructor. They'll see the full interactive planner with all your work. <br>
+                        <strong>Note:</strong> The link captures your data as it is now. If you make more changes, generate a new link.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="card calendar-section">
+                <div class="calendar-header">
+                    <h3>Calendar</h3>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <div class="calendar-view-toggle">
+                            <button class="cal-toggle-btn active" id="monthToggle" onclick="switchCalView('month')">Month</button>
+                            <button class="cal-toggle-btn" id="weekToggle" onclick="switchCalView('week')">Week</button>
+                        </div>
+                        <div class="calendar-nav" id="calNavBtns">
+                            <button onclick="changeMonth(-1)" id="calPrev">‹</button>
+                            <button onclick="changeMonth(1)" id="calNext">›</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Month View -->
+                <div id="monthView">
+                    <div class="calendar-month" id="calendarMonth"></div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                    <div class="calendar-legend">
+                        <div class="legend-item"><div class="legend-dot today-dot"></div> Today</div>
+                        <div class="legend-item"><div class="legend-dot task-legend"></div> Due</div>
+                        <div class="legend-item"><div class="legend-dot done-legend"></div> Done</div>
+                        <div class="legend-item"><div class="legend-dot pres-legend"></div> Present</div>
+                    </div>
+                </div>
+
+                <!-- Week View -->
+                <div id="weekView" class="week-view">
+                    <div class="week-nav">
+                        <button onclick="changeWeek(-1)" class="calendar-nav" style="background:var(--accent-soft);border:1px solid var(--border-subtle);color:var(--accent-bright);width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;">‹</button>
+                        <div class="week-nav-label" id="weekLabel"></div>
+                        <button onclick="changeWeek(1)" class="calendar-nav" style="background:var(--accent-soft);border:1px solid var(--border-subtle);color:var(--accent-bright);width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;">›</button>
+                    </div>
+                    <div id="weekDays"></div>
+                </div>
+            </div>
+
+            <div class="card todo-section">
+                <div class="todo-header">
+                    <h3>All Tasks</h3>
+                    <span class="todo-count" id="todoCount">0 remaining</span>
+                </div>
+                <div class="todo-list" id="todoList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Day Detail Modal -->
+    <div class="day-modal-overlay" id="dayModalOverlay" onclick="if(event.target===this)closeDayModal()">
+        <div class="day-modal">
+            <div class="day-modal-header">
+                <div>
+                    <div class="day-modal-title" id="dayModalTitle"></div>
+                    <div class="day-modal-subtitle" id="dayModalSubtitle"></div>
+                </div>
+                <button class="day-modal-close" onclick="closeDayModal()">×</button>
+            </div>
+            <div class="day-modal-body" id="dayModalBody"></div>
+            <div class="day-modal-add-section" id="dayModalAddSection">
+                <div class="day-modal-add-title">Add Quick Task</div>
+                <div class="day-modal-add-row">
+                    <input type="text" id="dayModalTaskInput" placeholder="Task description…" onkeydown="if(event.key==='Enter')addTaskFromModal()" />
+                    <select id="dayModalStepSelect"></select>
+                    <button class="day-modal-add-btn" onclick="addTaskFromModal()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetAll()">Reset All</button>
+    <button class="save-btn" onclick="saveProgress()">💾 Save Progress</button>
+    <div class="save-notification" id="saveNotification">✓ Progress Saved</div>
+
+    <script>
+        const steps = [
+            { id: 1, title: "Empathize, Define, and Research", duration: "1–2 hours", actionItems: 3 },
+            { id: 2, title: "Research, Divergent Thinking, and Ideate", duration: "1–2 hours", actionItems: 3 },
+            { id: 3, title: "Convergent Thinking and Refining Design", duration: "1–2 hours", actionItems: 3 },
+            { id: 4, title: "Prototype", duration: "2–3 hours", actionItems: 3 },
+            { id: 5, title: "Test", duration: "1–2 hours", actionItems: 2 },
+            { id: 6, title: "Create Presentation and Write One-Page Summary", duration: "Variable", actionItems: 2 }
+        ];
+
+        let currentCalendarDate = new Date();
+        let isSharedView = false;
+        let sharedData = null;
+
+        // ── Compression helpers (deflate via browser) ──
+        async function compressData(jsonStr) {
+            const stream = new Blob([jsonStr]).stream().pipeThrough(new CompressionStream('deflate'));
+            const buf = await new Response(stream).arrayBuffer();
+            let binary = '';
+            const bytes = new Uint8Array(buf);
+            for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+            // URL-safe base64
+            return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+
+        async function decompressData(b64) {
+            // Restore standard base64
+            let str = b64.replace(/-/g, '+').replace(/_/g, '/');
+            while (str.length % 4) str += '=';
+            const binary = atob(str);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate'));
+            return await new Response(stream).text();
+        }
+
+        // ── Check for shared data in URL ──
+        async function checkForSharedData() {
+            const params = new URLSearchParams(window.location.search);
+            const encoded = params.get('d');
+            if (!encoded) return false;
+            try {
+                const jsonStr = await decompressData(encoded);
+                sharedData = JSON.parse(jsonStr);
+                isSharedView = true;
+                return true;
+            } catch(e) {
+                console.warn('Failed to decode shared data:', e);
+                return false;
+            }
+        }
+
+        function getData() {
+            if (isSharedView && sharedData) return JSON.parse(JSON.stringify(sharedData));
+            return JSON.parse(localStorage.getItem('blueskyProject') || '{}');
+        }
+
+        function setData(data) {
+            if (isSharedView) return; // Read-only in shared view
+            localStorage.setItem('blueskyProject', JSON.stringify(data));
+        }
+
+        async function initializePlanner() {
+            await checkForSharedData();
+
+            const data = getData();
+            if (!data.steps) { data.steps = {}; if (!isSharedView) setData(data); }
+            if (!data.links) { data.links = []; if (!isSharedView) setData(data); }
+
+            // Pre-fill EduMap data if planner is fresh
+            if (!isSharedView) prefillEduMapData();
+
+            if (isSharedView) {
+                // Show view-only banner
+                document.getElementById('viewOnlyBanner').style.display = '';
+                const desc = document.getElementById('viewOnlyDesc');
+                const name = data.studentName || 'a student';
+                desc.textContent = `Viewing ${name}'s project planner — this is a read-only shared view.`;
+
+                // Hide editing controls
+                document.getElementById('exportSection').style.display = 'none';
+                document.querySelector('.save-btn').style.display = 'none';
+                document.querySelector('.reset-btn').style.display = 'none';
+                const rubricEl = document.getElementById('rubricCard');
+                if (rubricEl) rubricEl.style.display = 'none';
+                const emailEl = document.getElementById('emailReminderCard');
+                if (emailEl) emailEl.style.display = 'none';
+
+                // Force show display mode for project info
+                if (data.studentName || data.projectName) {
+                    data.infoConfirmed = true;
+                }
+            }
+
+            loadProgress();
+            renderSteps();
+            updateProgress();
+            renderCalendar();
+            updateTodoList();
+            renderLinks();
+            renderRubricChecklist();
+            checkProjectInfoState();
+
+            if (isSharedView) {
+                // Make all inputs/textareas read-only
+                document.querySelectorAll('input, textarea').forEach(el => {
+                    el.setAttribute('readonly', true);
+                    el.setAttribute('disabled', true);
+                });
+                // Hide all edit/add/remove buttons
+                document.querySelectorAll('.add-action-btn, .remove-action-btn, .complete-step-btn, .add-link-toggle, .add-link-form, .edit-info-btn, .confirm-info-btn, .step-link-add-btn, .step-link-form, .step-link-remove').forEach(el => {
+                    el.style.display = 'none';
+                });
+            }
+        }
+
+        // ── Project Info ──
+        function checkProjectInfoState() {
+            const data = getData();
+            if (data.infoConfirmed) {
+                showProjectDisplay();
+            }
+        }
+
+        function confirmProjectInfo() {
+            const name = document.getElementById('studentName').value.trim();
+            const project = document.getElementById('projectName').value.trim();
+            const rationale = document.getElementById('projectRationale').value.trim();
+            const date = document.getElementById('presentationDate').value;
+
+            if (!name && !project) {
+                document.getElementById('studentName').focus();
+                return;
+            }
+
+            const data = getData();
+            data.studentName = name;
+            data.projectName = project;
+            data.projectRationale = rationale;
+            data.presentationDate = date;
+            data.infoConfirmed = true;
+            setData(data);
+
+            showProjectDisplay();
+            renderCalendar();
+        }
+
+        function showProjectDisplay() {
+            const data = getData();
+            document.getElementById('displayName').textContent = data.studentName || '—';
+            document.getElementById('displayProject').textContent = data.projectName || '—';
+            const rationaleEl = document.getElementById('displayRationale');
+            rationaleEl.textContent = data.projectRationale || '—';
+            rationaleEl.style.whiteSpace = 'pre-wrap';
+            rationaleEl.style.lineHeight = '1.6';
+            rationaleEl.style.fontSize = '0.88em';
+            document.getElementById('displayDate').textContent = data.presentationDate
+                ? new Date(data.presentationDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' })
+                : '—';
+
+            // Show/hide Add to Calendar button
+            const calBtn = document.getElementById('addToCalBtn');
+            calBtn.style.display = data.presentationDate ? '' : 'none';
+
+            document.getElementById('projectInfoForm').classList.add('hidden');
+            document.getElementById('projectInfoDisplay').classList.add('visible');
+        }
+
+        function editProjectInfo() {
+            document.getElementById('projectInfoForm').classList.remove('hidden');
+            document.getElementById('projectInfoDisplay').classList.remove('visible');
+            const data = getData();
+            data.infoConfirmed = false;
+            setData(data);
+        }
+
+        function toggleInlineDateEdit() {
+            const el = document.getElementById('inlineDateEdit');
+            const isVisible = el.style.display !== 'none';
+            if (isVisible) {
+                el.style.display = 'none';
+            } else {
+                const data = getData();
+                document.getElementById('inlineDateInput').value = data.presentationDate || '';
+                el.style.display = '';
+            }
+        }
+
+        function saveInlineDate() {
+            const newDate = document.getElementById('inlineDateInput').value;
+            const data = getData();
+            data.presentationDate = newDate;
+            setData(data);
+
+            // Update the main form input too
+            document.getElementById('presentationDate').value = newDate;
+
+            // Update display
+            document.getElementById('displayDate').textContent = newDate
+                ? new Date(newDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' })
+                : '—';
+
+            const calBtn = document.getElementById('addToCalBtn');
+            calBtn.style.display = newDate ? '' : 'none';
+
+            document.getElementById('inlineDateEdit').style.display = 'none';
+            renderCalendar();
+        }
+
+        // ── Steps ──
+        function renderSteps() {
+            const container = document.getElementById('stepsContainer');
+            container.innerHTML = '';
+
+            steps.forEach((step, i) => {
+                const stepData = getStepData(step.id);
+                const div = document.createElement('div');
+                div.className = `step ${stepData.completed ? 'completed' : ''}`;
+                div.id = `step-${step.id}`;
+                div.style.animationDelay = `${i * 0.06}s`;
+
+                div.innerHTML = `
+                    <div class="step-header">
+                        <div class="step-title-group">
+                            <div class="step-title">
+                                <span class="step-number">${step.id}</span>
+                                ${step.title}
+                            </div>
+                            <div class="step-duration">${step.duration}</div>
+                        </div>
+                        <button class="complete-step-btn" onclick="toggleStepCompletion(${step.id})">
+                            ${stepData.completed ? '✓ Completed' : 'Mark Complete'}
+                        </button>
+                    </div>
+                    <div class="action-items" id="actions-${step.id}">
+                        ${renderActionItems(step.id, stepData.actions)}
+                    </div>
+                    <button class="add-action-btn" onclick="addActionItem(${step.id})">+ Add Action Item</button>
+                    <div class="step-links-section">
+                        <div class="step-links-header">
+                            <span class="step-links-title">📎 Working Files & Links</span>
+                            <button class="step-link-add-btn" onclick="toggleStepLinkForm(${step.id})">+ Add</button>
+                        </div>
+                        <div id="step-links-list-${step.id}">${renderStepLinks(step.id, stepData.links || [])}</div>
+                        <div class="step-link-form" id="step-link-form-${step.id}">
+                            <input type="text" id="step-link-name-${step.id}" placeholder="Link name…" />
+                            <input type="text" id="step-link-url-${step.id}" placeholder="URL…" onkeydown="if(event.key==='Enter')saveStepLink(${step.id})" />
+                            <button class="step-link-save" onclick="saveStepLink(${step.id})">Add</button>
+                            <button class="step-link-cancel" onclick="toggleStepLinkForm(${step.id})">Cancel</button>
+                        </div>
+                    </div>
+                    <div class="diary-section">
+                        <h4>Notes &amp; Progress</h4>
+                        <textarea id="diary-${step.id}" placeholder="Record your thoughts, progress, challenges, and ideas for this step...">${stepData.diary || ''}</textarea>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            addAutoSaveListeners();
+        }
+
+        function renderActionItems(stepId, actions) {
+            return actions.map((action, index) => `
+                <div class="action-item ${action.completed ? 'completed' : ''}" id="action-${stepId}-${index}">
+                    <input type="checkbox"
+                           ${action.completed ? 'checked' : ''}
+                           onchange="toggleAction(${stepId}, ${index})" />
+                    <input type="text"
+                           value="${escapeHtml(action.text)}"
+                           placeholder="Describe action item…"
+                           onchange="updateActionText(${stepId}, ${index}, this.value)" />
+                    <div class="action-due-date">
+                        <input type="date"
+                               value="${action.dueDate || ''}"
+                               title="Due date"
+                               onchange="updateActionDueDate(${stepId}, ${index}, this.value)" />
+                    </div>
+                    <button class="remove-action-btn" onclick="removeActionItem(${stepId}, ${index})" title="Remove">×</button>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str || '';
+            return div.innerHTML;
+        }
+
+        function getStepData(stepId) {
+            const data = getData();
+            if (!data.steps) data.steps = {};
+            if (!data.steps[stepId]) {
+                const step = steps.find(s => s.id === stepId);
+                data.steps[stepId] = {
+                    completed: false,
+                    actions: Array(step.actionItems).fill(null).map(() => ({ text: '', completed: false, dueDate: '' })),
+                    diary: '',
+                    links: []
+                };
+                setData(data);
+            }
+            // ensure dueDate field exists on older data
+            data.steps[stepId].actions.forEach(a => {
+                if (a.dueDate === undefined) a.dueDate = '';
+            });
+            // ensure links array exists
+            if (!data.steps[stepId].links) data.steps[stepId].links = [];
+            return data.steps[stepId];
+        }
+
+        function toggleAction(stepId, actionIndex) {
+            const data = getData();
+            data.steps[stepId].actions[actionIndex].completed = !data.steps[stepId].actions[actionIndex].completed;
+            setData(data);
+            const actionDiv = document.getElementById(`action-${stepId}-${actionIndex}`);
+            actionDiv.classList.toggle('completed');
+            updateProgress();
+            updateTodoList();
+            renderCalendar();
+        }
+
+        function updateActionText(stepId, actionIndex, text) {
+            const data = getData();
+            data.steps[stepId].actions[actionIndex].text = text;
+            setData(data);
+            updateProgress();
+            updateTodoList();
+        }
+
+        function updateActionDueDate(stepId, actionIndex, date) {
+            const data = getData();
+            data.steps[stepId].actions[actionIndex].dueDate = date;
+            setData(data);
+            updateTodoList();
+            renderCalendar();
+        }
+
+        function addActionItem(stepId) {
+            const data = getData();
+            data.steps[stepId].actions.push({ text: '', completed: false, dueDate: '' });
+            setData(data);
+            renderSteps();
+            updateProgress();
+            updateTodoList();
+        }
+
+        function removeActionItem(stepId, actionIndex) {
+            const data = getData();
+            data.steps[stepId].actions.splice(actionIndex, 1);
+            setData(data);
+            renderSteps();
+            updateProgress();
+            updateTodoList();
+            renderCalendar();
+        }
+
+        function toggleStepCompletion(stepId) {
+            const data = getData();
+            data.steps[stepId].completed = !data.steps[stepId].completed;
+            setData(data);
+            renderSteps();
+            updateProgress();
+        }
+
+        // ── Progress ──
+        function updateProgress() {
+            const data = getData();
+            let totalActions = 0;
+            let completedActions = 0;
+            let totalSteps = steps.length;
+            let completedSteps = 0;
+
+            steps.forEach(step => {
+                if (data.steps && data.steps[step.id]) {
+                    if (data.steps[step.id].completed) completedSteps++;
+                    data.steps[step.id].actions.forEach(action => {
+                        if (action.text && action.text.trim()) {
+                            totalActions++;
+                            if (action.completed) completedActions++;
+                        }
+                    });
+                }
+            });
+
+            // Calculate from action items (filled ones only)
+            const percentage = totalActions > 0 ? Math.round((completedActions / totalActions) * 100) : 0;
+
+            const bar = document.getElementById('progressBar');
+            bar.style.width = percentage + '%';
+            if (percentage > 0) bar.classList.add('glow');
+            else bar.classList.remove('glow');
+
+            document.getElementById('progressText').textContent = percentage + '%';
+            document.getElementById('stepsComplete').textContent = `${completedSteps}/${totalSteps}`;
+            document.getElementById('tasksComplete').textContent = `${completedActions}/${totalActions}`;
+            document.getElementById('overallPercent').textContent = percentage + '%';
+        }
+
+        // ── Calendar ──
+        let currentCalView = 'month';
+        let currentWeekStart = getWeekStart(new Date());
+
+        function getWeekStart(date) {
+            const d = new Date(date);
+            d.setHours(0,0,0,0);
+            const day = d.getDay();
+            d.setDate(d.getDate() - day);
+            return d;
+        }
+
+        function switchCalView(view) {
+            currentCalView = view;
+            document.getElementById('monthToggle').classList.toggle('active', view === 'month');
+            document.getElementById('weekToggle').classList.toggle('active', view === 'week');
+            document.getElementById('monthView').classList.toggle('hidden', view === 'week');
+            document.getElementById('weekView').classList.toggle('visible', view === 'week');
+
+            // Update nav buttons
+            const prev = document.getElementById('calPrev');
+            const next = document.getElementById('calNext');
+            if (view === 'week') {
+                prev.setAttribute('onclick', 'changeWeek(-1)');
+                next.setAttribute('onclick', 'changeWeek(1)');
+            } else {
+                prev.setAttribute('onclick', 'changeMonth(-1)');
+                next.setAttribute('onclick', 'changeMonth(1)');
+            }
+
+            if (view === 'week') renderWeekView();
+        }
+
+        function getAllTaskDates() {
+            const data = getData();
+            const dateMap = {};
+            steps.forEach(step => {
+                if (data.steps && data.steps[step.id]) {
+                    data.steps[step.id].actions.forEach((action, idx) => {
+                        if (action.text && action.dueDate) {
+                            if (!dateMap[action.dueDate]) dateMap[action.dueDate] = [];
+                            dateMap[action.dueDate].push({
+                                text: action.text,
+                                completed: action.completed,
+                                stepId: step.id,
+                                stepTitle: step.title,
+                                actionIndex: idx
+                            });
+                        }
+                    });
+                }
+            });
+            return dateMap;
+        }
+
+        function formatDateKey(y, m, d) {
+            return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        }
+
+        function formatDateKeyFromDate(date) {
+            return formatDateKey(date.getFullYear(), date.getMonth(), date.getDate());
+        }
+
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+            document.getElementById('calendarMonth').textContent = `${monthNames[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const prevLastDay = new Date(year, month, 0);
+            const firstDayOfWeek = firstDay.getDay();
+            const lastDate = lastDay.getDate();
+            const prevLastDate = prevLastDay.getDate();
+
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            const dayHeaders = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            dayHeaders.forEach(d => {
+                const h = document.createElement('div');
+                h.className = 'calendar-day-header';
+                h.textContent = d;
+                grid.appendChild(h);
+            });
+
+            const today = new Date();
+            const data = getData();
+            const presDate = data.presentationDate ? new Date(data.presentationDate + 'T00:00:00') : null;
+            const taskDates = getAllTaskDates();
+
+            // Previous month days
+            for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day other-month';
+                const prevMonth = month === 0 ? 11 : month - 1;
+                const prevYear = month === 0 ? year - 1 : year;
+                const prevDay = prevLastDate - i;
+                const dateKey = formatDateKey(prevYear, prevMonth, prevDay);
+                day.innerHTML = `<span class="day-number">${prevDay}</span>`;
+                day.onclick = () => openDayModal(dateKey);
+                grid.appendChild(day);
+            }
+
+            // Current month days
+            for (let i = 1; i <= lastDate; i++) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day';
+                const currentDate = new Date(year, month, i);
+                const dateKey = formatDateKey(year, month, i);
+
+                if (currentDate.toDateString() === today.toDateString()) day.classList.add('today');
+                if (presDate && currentDate.toDateString() === presDate.toDateString()) day.classList.add('presentation-date');
+
+                let inner = `<span class="day-number">${i}</span>`;
+
+                // Task dots
+                if (taskDates[dateKey]) {
+                    const tasks = taskDates[dateKey];
+                    const dots = tasks.slice(0, 3).map(t =>
+                        `<div class="task-dot ${t.completed ? 'completed-dot' : ''}"></div>`
+                    ).join('');
+                    inner += `<div class="task-dots">${dots}</div>`;
+
+                    // Hover popup
+                    const items = tasks.map(t =>
+                        `<div class="day-popup-item ${t.completed ? 'done-task' : ''}">${escapeHtml(t.text)}</div>`
+                    ).join('');
+                    inner += `<div class="day-popup"><div class="day-popup-title">Tasks Due</div>${items}</div>`;
+                }
+
+                if (presDate && currentDate.toDateString() === presDate.toDateString()) {
+                    inner += `<div class="day-popup"><div class="day-popup-title">📅 Presentation Day</div></div>`;
+                }
+
+                day.innerHTML = inner;
+                day.onclick = () => openDayModal(dateKey);
+                grid.appendChild(day);
+            }
+
+            // Next month
+            const remaining = 42 - (firstDayOfWeek + lastDate);
+            for (let i = 1; i <= remaining; i++) {
+                const day = document.createElement('div');
+                day.className = 'calendar-day other-month';
+                const nextMonth = month === 11 ? 0 : month + 1;
+                const nextYear = month === 11 ? year + 1 : year;
+                const dateKey = formatDateKey(nextYear, nextMonth, i);
+                day.innerHTML = `<span class="day-number">${i}</span>`;
+                day.onclick = () => openDayModal(dateKey);
+                grid.appendChild(day);
+            }
+
+            // Also refresh week view if visible
+            if (currentCalView === 'week') renderWeekView();
+        }
+
+        function changeMonth(dir) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + dir);
+            renderCalendar();
+        }
+
+        // ── Week View ──
+        function changeWeek(dir) {
+            currentWeekStart.setDate(currentWeekStart.getDate() + (dir * 7));
+            renderWeekView();
+        }
+
+        function renderWeekView() {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const data = getData();
+            const presDate = data.presentationDate ? new Date(data.presentationDate + 'T00:00:00') : null;
+            const taskDates = getAllTaskDates();
+            const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+            const weekEnd = new Date(currentWeekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+
+            const startLabel = currentWeekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            const endLabel = weekEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            document.getElementById('weekLabel').textContent = `${startLabel} – ${endLabel}`;
+
+            const container = document.getElementById('weekDays');
+            container.innerHTML = '';
+
+            for (let d = 0; d < 7; d++) {
+                const date = new Date(currentWeekStart);
+                date.setDate(date.getDate() + d);
+                const dateKey = formatDateKeyFromDate(date);
+                const isToday = date.toDateString() === today.toDateString();
+                const isPres = presDate && date.toDateString() === presDate.toDateString();
+                const tasks = taskDates[dateKey] || [];
+
+                const card = document.createElement('div');
+                card.className = 'week-day-card' + (isToday ? ' is-today' : '') + (isPres ? ' is-presentation' : '');
+                card.onclick = () => openDayModal(dateKey);
+
+                let header = `
+                    <div class="week-day-header">
+                        <div>
+                            <span class="week-day-name">${dayNames[d]}${isToday ? ' (Today)' : ''}</span>
+                        </div>
+                        <div style="display:flex;gap:6px;align-items:center;">
+                            ${isPres ? '<span class="week-pres-badge">📅 Presentation</span>' : ''}
+                            <span class="week-day-date">${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                        </div>
+                    </div>`;
+
+                let tasksHtml = '';
+                if (tasks.length > 0) {
+                    tasksHtml = tasks.map(t => {
+                        const isOverdue = !t.completed && date < today;
+                        const dotClass = t.completed ? 'done' : (isOverdue ? 'overdue' : 'pending');
+                        return `
+                            <div class="week-task-item">
+                                <div class="week-task-dot ${dotClass}"></div>
+                                <div class="week-task-text ${t.completed ? 'completed-text' : ''}">${escapeHtml(t.text)}</div>
+                                <div class="week-task-step">S${t.stepId}</div>
+                            </div>`;
+                    }).join('');
+                } else if (!isPres) {
+                    tasksHtml = '<div class="week-empty-day">No tasks</div>';
+                }
+
+                card.innerHTML = header + tasksHtml;
+                container.appendChild(card);
+            }
+        }
+
+        // ── Day Modal ──
+        let currentModalDate = null;
+
+        function openDayModal(dateKey) {
+            currentModalDate = dateKey;
+            const date = new Date(dateKey + 'T00:00:00');
+            const data = getData();
+            const presDate = data.presentationDate || '';
+            const taskDates = getAllTaskDates();
+            const tasks = taskDates[dateKey] || [];
+
+            // Header
+            document.getElementById('dayModalTitle').textContent = date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const dayDiff = Math.round((date - today) / (1000 * 60 * 60 * 24));
+            let subtitle = '';
+            if (dayDiff === 0) subtitle = 'Today';
+            else if (dayDiff === 1) subtitle = 'Tomorrow';
+            else if (dayDiff === -1) subtitle = 'Yesterday';
+            else if (dayDiff > 1) subtitle = `In ${dayDiff} days`;
+            else subtitle = `${Math.abs(dayDiff)} days ago`;
+            document.getElementById('dayModalSubtitle').textContent = subtitle;
+
+            // Body
+            let body = '';
+
+            if (dateKey === presDate) {
+                body += '<div class="day-modal-pres-banner">📅 Presentation Day</div>';
+            }
+
+            if (tasks.length > 0) {
+                body += '<div class="day-modal-section-title">Tasks Due This Day</div>';
+                tasks.forEach(t => {
+                    const disabledAttr = isSharedView ? 'disabled' : '';
+                    body += `
+                        <div class="day-modal-task ${t.completed ? 'is-done' : ''}">
+                            <input type="checkbox" ${t.completed ? 'checked' : ''} ${disabledAttr} onchange="toggleActionFromModal(${t.stepId}, ${t.actionIndex})" />
+                            <div class="day-modal-task-info">
+                                <div class="day-modal-task-text">${escapeHtml(t.text)}</div>
+                                <div class="day-modal-task-step">Step ${t.stepId}: ${t.stepTitle}</div>
+                            </div>
+                        </div>`;
+                });
+            } else {
+                body += '<div class="day-modal-empty">No tasks scheduled for this day.<br>Add one below!</div>';
+            }
+
+            document.getElementById('dayModalBody').innerHTML = body;
+
+            // Step select dropdown
+            const sel = document.getElementById('dayModalStepSelect');
+            sel.innerHTML = steps.map(s => `<option value="${s.id}">Step ${s.id}</option>`).join('');
+
+            // Clear input
+            document.getElementById('dayModalTaskInput').value = '';
+
+            // Show
+            document.getElementById('dayModalOverlay').classList.add('open');
+            // Hide add section in shared view
+            document.getElementById('dayModalAddSection').style.display = isSharedView ? 'none' : '';
+            if (!isSharedView) setTimeout(() => document.getElementById('dayModalTaskInput').focus(), 100);
+        }
+
+        function closeDayModal() {
+            document.getElementById('dayModalOverlay').classList.remove('open');
+            currentModalDate = null;
+        }
+
+        function toggleActionFromModal(stepId, actionIndex) {
+            toggleAction(stepId, actionIndex);
+            // Re-render modal content
+            if (currentModalDate) openDayModal(currentModalDate);
+        }
+
+        function addTaskFromModal() {
+            const text = document.getElementById('dayModalTaskInput').value.trim();
+            if (!text || !currentModalDate) return;
+
+            const stepId = parseInt(document.getElementById('dayModalStepSelect').value);
+            const data = getData();
+
+            // Ensure step data exists
+            if (!data.steps[stepId]) {
+                const step = steps.find(s => s.id === stepId);
+                data.steps[stepId] = {
+                    completed: false,
+                    actions: Array(step.actionItems).fill(null).map(() => ({ text: '', completed: false, dueDate: '' })),
+                    diary: ''
+                };
+            }
+
+            // Add new action with this date
+            data.steps[stepId].actions.push({ text: text, completed: false, dueDate: currentModalDate });
+            setData(data);
+
+            // Refresh everything
+            renderSteps();
+            updateProgress();
+            updateTodoList();
+            renderCalendar();
+
+            // Re-open modal to show updated list
+            openDayModal(currentModalDate);
+        }
+
+        // ── Todo ──
+        function updateTodoList() {
+            const data = getData();
+            const todoList = document.getElementById('todoList');
+            const allTasks = [];
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            steps.forEach(step => {
+                if (data.steps && data.steps[step.id]) {
+                    data.steps[step.id].actions.forEach((action, index) => {
+                        if (action.text && action.text.trim()) {
+                            allTasks.push({
+                                stepId: step.id,
+                                stepTitle: step.title,
+                                actionIndex: index,
+                                text: action.text,
+                                completed: action.completed,
+                                dueDate: action.dueDate || ''
+                            });
+                        }
+                    });
+                }
+            });
+
+            const incomplete = allTasks.filter(t => !t.completed);
+            document.getElementById('todoCount').textContent = `${incomplete.length} remaining`;
+
+            if (allTasks.length === 0) {
+                todoList.innerHTML = '<div class="empty-state">No tasks yet. Add action items to your steps to see them here.</div>';
+                return;
+            }
+
+            // Sort: incomplete first, then by due date
+            allTasks.sort((a, b) => {
+                if (a.completed !== b.completed) return a.completed ? 1 : -1;
+                if (a.dueDate && b.dueDate) return a.dueDate.localeCompare(b.dueDate);
+                if (a.dueDate) return -1;
+                if (b.dueDate) return 1;
+                return 0;
+            });
+
+            todoList.innerHTML = allTasks.map(task => {
+                let dueHtml = '';
+                if (task.dueDate) {
+                    const due = new Date(task.dueDate + 'T00:00:00');
+                    const isOverdue = !task.completed && due < today;
+                    const formatted = due.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                    dueHtml = `<div class="todo-due ${isOverdue ? 'overdue' : ''}">📅 ${formatted}${isOverdue ? ' — overdue' : ''}</div>`;
+                }
+                return `
+                    <div class="todo-item ${task.completed ? 'completed' : ''}">
+                        <input type="checkbox"
+                               ${task.completed ? 'checked' : ''}
+                               onchange="toggleAction(${task.stepId}, ${task.actionIndex})" />
+                        <div class="todo-content">
+                            <div class="todo-text">${escapeHtml(task.text)}</div>
+                            <div class="todo-step">Step ${task.stepId}: ${task.stepTitle}</div>
+                            ${dueHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ── Links ──
+        function renderLinks() {
+            const data = getData();
+            const links = data.links || [];
+            const list = document.getElementById('linksList');
+
+            if (links.length === 0) {
+                list.innerHTML = '<div class="empty-links">No links added yet. Add links to your working documents and files.</div>';
+                return;
+            }
+
+            list.innerHTML = links.map((link, i) => `
+                <div class="link-item">
+                    <div class="link-icon">🔗</div>
+                    <div class="link-info">
+                        <div class="link-name">${escapeHtml(link.name)}</div>
+                        <a class="link-url" href="${escapeHtml(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.url)}</a>
+                    </div>
+                    <button class="link-remove-btn" onclick="removeLink(${i})" title="Remove">×</button>
+                </div>
+            `).join('');
+        }
+
+        function toggleAddLink() {
+            const form = document.getElementById('addLinkForm');
+            const toggle = document.getElementById('addLinkToggle');
+            if (form.classList.contains('visible')) {
+                form.classList.remove('visible');
+                toggle.style.display = '';
+            } else {
+                form.classList.add('visible');
+                toggle.style.display = 'none';
+                document.getElementById('linkNameInput').focus();
+            }
+        }
+
+        function saveLink() {
+            const name = document.getElementById('linkNameInput').value.trim();
+            let url = document.getElementById('linkUrlInput').value.trim();
+            if (!name || !url) return;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+
+            const data = getData();
+            if (!data.links) data.links = [];
+            data.links.push({ name, url });
+            setData(data);
+
+            document.getElementById('linkNameInput').value = '';
+            document.getElementById('linkUrlInput').value = '';
+            toggleAddLink();
+            renderLinks();
+        }
+
+        function removeLink(index) {
+            const data = getData();
+            data.links.splice(index, 1);
+            setData(data);
+            renderLinks();
+        }
+
+        // ── Step Links ──
+        function renderStepLinks(stepId, links) {
+            if (!links || links.length === 0) {
+                return '<div class="step-links-empty">No links yet — attach relevant docs, research, or files.</div>';
+            }
+            return links.map((link, i) => `
+                <div class="step-link-item">
+                    <span class="step-link-icon">🔗</span>
+                    <div class="step-link-info">
+                        <div class="step-link-name">${escapeHtml(link.name)}</div>
+                        <a class="step-link-url" href="${escapeHtml(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.url)}</a>
+                    </div>
+                    <button class="step-link-remove" onclick="removeStepLink(${stepId}, ${i})" title="Remove">×</button>
+                </div>
+            `).join('');
+        }
+
+        function toggleStepLinkForm(stepId) {
+            const form = document.getElementById(`step-link-form-${stepId}`);
+            form.classList.toggle('visible');
+            if (form.classList.contains('visible')) {
+                document.getElementById(`step-link-name-${stepId}`).focus();
+            }
+        }
+
+        function saveStepLink(stepId) {
+            const nameEl = document.getElementById(`step-link-name-${stepId}`);
+            const urlEl = document.getElementById(`step-link-url-${stepId}`);
+            const name = nameEl.value.trim();
+            let url = urlEl.value.trim();
+            if (!name || !url) return;
+            if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('#')) url = 'https://' + url;
+
+            const data = getData();
+            if (!data.steps[stepId].links) data.steps[stepId].links = [];
+            data.steps[stepId].links.push({ name, url });
+            setData(data);
+
+            nameEl.value = '';
+            urlEl.value = '';
+            toggleStepLinkForm(stepId);
+
+            // Re-render just the links list for this step
+            const list = document.getElementById(`step-links-list-${stepId}`);
+            list.innerHTML = renderStepLinks(stepId, data.steps[stepId].links);
+        }
+
+        function removeStepLink(stepId, linkIndex) {
+            const data = getData();
+            if (data.steps[stepId].links) {
+                data.steps[stepId].links.splice(linkIndex, 1);
+                setData(data);
+                const list = document.getElementById(`step-links-list-${stepId}`);
+                list.innerHTML = renderStepLinks(stepId, data.steps[stepId].links);
+            }
+        }
+
+        // ── Email Reminders ──
+        function getUpcomingTasks(rangeDays) {
+            const data = getData();
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            const allTasks = [];
+
+            steps.forEach(step => {
+                if (data.steps && data.steps[step.id]) {
+                    data.steps[step.id].actions.forEach((action) => {
+                        if (action.text && action.text.trim() && !action.completed) {
+                            const task = {
+                                text: action.text,
+                                dueDate: action.dueDate,
+                                stepId: step.id,
+                                stepTitle: step.title,
+                                isOverdue: false
+                            };
+                            if (action.dueDate) {
+                                const due = new Date(action.dueDate + 'T00:00:00');
+                                const daysDiff = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+                                task.isOverdue = daysDiff < 0;
+                                task.daysDiff = daysDiff;
+
+                                if (rangeDays === 'all' || daysDiff <= parseInt(rangeDays)) {
+                                    allTasks.push(task);
+                                }
+                            } else if (rangeDays === 'all') {
+                                task.daysDiff = 999;
+                                allTasks.push(task);
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Sort: overdue first, then by due date
+            allTasks.sort((a, b) => {
+                if (a.dueDate && b.dueDate) return a.dueDate.localeCompare(b.dueDate);
+                if (a.dueDate) return -1;
+                if (b.dueDate) return 1;
+                return 0;
+            });
+
+            return allTasks;
+        }
+
+        function buildReminderText() {
+            const range = document.getElementById('reminderRange').value;
+            const tasks = getUpcomingTasks(range);
+            const data = getData();
+            const projectName = data.projectName || 'Bluesky Creativity Project';
+            const rangeLabel = range === 'all' ? 'All' : `Next ${range} day${range === '1' ? '' : 's'}`;
+
+            let text = `📋 ${projectName} — Task Reminder\n`;
+            text += `${rangeLabel} | Generated ${new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}\n`;
+            text += `${'─'.repeat(45)}\n\n`;
+
+            if (tasks.length === 0) {
+                text += `✅ No pending tasks in this timeframe. You're all caught up!\n`;
+                return text;
+            }
+
+            // Group by date
+            const overdue = tasks.filter(t => t.isOverdue);
+            const upcoming = tasks.filter(t => !t.isOverdue);
+
+            if (overdue.length > 0) {
+                text += `⚠️ OVERDUE (${overdue.length} task${overdue.length > 1 ? 's' : ''}):\n`;
+                overdue.forEach(t => {
+                    const dueStr = t.dueDate ? new Date(t.dueDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'No date';
+                    text += `  ❌ [${dueStr}] ${t.text} (Step ${t.stepId}: ${t.stepTitle})\n`;
+                });
+                text += `\n`;
+            }
+
+            if (upcoming.length > 0) {
+                text += `📅 UPCOMING (${upcoming.length} task${upcoming.length > 1 ? 's' : ''}):\n`;
+
+                let lastDate = '';
+                upcoming.forEach(t => {
+                    const dueStr = t.dueDate ? new Date(t.dueDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) : 'No due date';
+                    if (dueStr !== lastDate) {
+                        text += `\n  📆 ${dueStr}:\n`;
+                        lastDate = dueStr;
+                    }
+                    text += `    ○ ${t.text} (Step ${t.stepId})\n`;
+                });
+            }
+
+            // Presentation reminder
+            if (data.presentationDate) {
+                const presDate = new Date(data.presentationDate + 'T00:00:00');
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                const daysUntil = Math.ceil((presDate - today) / (1000 * 60 * 60 * 24));
+                text += `\n${'─'.repeat(45)}\n`;
+                text += `🎤 Presentation: ${presDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}`;
+                if (daysUntil > 0) text += ` (${daysUntil} days away)`;
+                else if (daysUntil === 0) text += ` (TODAY!)`;
+                else text += ` (${Math.abs(daysUntil)} days ago)`;
+                text += `\n`;
+            }
+
+            return text;
+        }
+
+        function buildReminderSubject() {
+            const data = getData();
+            const range = document.getElementById('reminderRange').value;
+            const tasks = getUpcomingTasks(range);
+            const projectName = data.projectName || 'Bluesky Project';
+            const overdue = tasks.filter(t => t.isOverdue).length;
+            let subject = `${projectName} — ${tasks.length} task${tasks.length !== 1 ? 's' : ''} reminder`;
+            if (overdue > 0) subject += ` (${overdue} overdue!)`;
+            return subject;
+        }
+
+        function sendEmailReminder() {
+            const email = document.getElementById('reminderEmail').value.trim();
+            if (!email) {
+                document.getElementById('reminderEmail').focus();
+                document.getElementById('reminderEmail').style.borderColor = 'var(--danger)';
+                setTimeout(() => document.getElementById('reminderEmail').style.borderColor = '', 2000);
+                return;
+            }
+
+            // Save email for next time
+            const data = getData();
+            data.reminderEmail = email;
+            setData(data);
+
+            const subject = encodeURIComponent(buildReminderSubject());
+            const body = encodeURIComponent(buildReminderText());
+            const mailtoUrl = `mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`;
+
+            window.location.href = mailtoUrl;
+
+            const note = document.getElementById('reminderSavedNote');
+            note.style.display = '';
+            setTimeout(() => note.style.display = 'none', 4000);
+        }
+
+        function copyReminderText() {
+            const text = buildReminderText();
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const orig = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => btn.textContent = orig, 2000);
+            });
+        }
+
+        function toggleReminderPreview() {
+            const box = document.getElementById('reminderPreviewBox');
+            if (box.style.display === 'none') {
+                document.getElementById('reminderPreviewText').textContent = buildReminderText();
+                box.style.display = '';
+            } else {
+                box.style.display = 'none';
+            }
+        }
+
+        // ── Save / Load ──
+        function saveProgress() {
+            if (isSharedView) return;
+            const data = getData();
+            data.studentName = document.getElementById('studentName').value;
+            data.projectName = document.getElementById('projectName').value;
+            data.projectRationale = document.getElementById('projectRationale').value;
+            data.presentationDate = document.getElementById('presentationDate').value;
+            data.generalNotes = document.getElementById('generalNotes').value;
+
+            steps.forEach(step => {
+                const textarea = document.getElementById(`diary-${step.id}`);
+                if (textarea && data.steps[step.id]) {
+                    data.steps[step.id].diary = textarea.value;
+                }
+            });
+
+            setData(data);
+
+            const notification = document.getElementById('saveNotification');
+            notification.classList.add('show');
+            setTimeout(() => notification.classList.remove('show'), 2000);
+
+            renderCalendar();
+        }
+
+        function loadProgress() {
+            const data = getData();
+            if (data.studentName) document.getElementById('studentName').value = data.studentName;
+            if (data.projectName) document.getElementById('projectName').value = data.projectName;
+            if (data.projectRationale) document.getElementById('projectRationale').value = data.projectRationale;
+            if (data.presentationDate) document.getElementById('presentationDate').value = data.presentationDate;
+            if (data.generalNotes) document.getElementById('generalNotes').value = data.generalNotes;
+            if (data.reminderEmail) document.getElementById('reminderEmail').value = data.reminderEmail;
+        }
+
+        function addAutoSaveListeners() {
+            document.querySelectorAll('input, textarea').forEach(el => {
+                el.addEventListener('change', saveProgress);
+            });
+        }
+
+        function resetAll() {
+            if (isSharedView) return;
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                localStorage.removeItem('blueskyProject');
+                location.reload();
+            }
+        }
+
+        // ── Add to Calendar (ICS) ──
+        function addToCalendar() {
+            const data = getData();
+            if (!data.presentationDate) return;
+
+            const dateStr = data.presentationDate.replace(/-/g, '');
+            const nextDay = new Date(data.presentationDate + 'T00:00:00');
+            nextDay.setDate(nextDay.getDate() + 1);
+            const endStr = nextDay.toISOString().slice(0,10).replace(/-/g, '');
+
+            const projectName = data.projectName || 'Bluesky Creativity Project';
+            const studentName = data.studentName || '';
+
+            const ics = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//Bluesky Creativity Project//EN',
+                'BEGIN:VEVENT',
+                `DTSTART;VALUE=DATE:${dateStr}`,
+                `DTEND;VALUE=DATE:${endStr}`,
+                `SUMMARY:📊 Presentation: ${projectName}`,
+                `DESCRIPTION:Bluesky Creativity Project presentation${studentName ? ' by ' + studentName : ''}`,
+                'STATUS:CONFIRMED',
+                'BEGIN:VALARM',
+                'TRIGGER:-P1D',
+                'ACTION:DISPLAY',
+                'DESCRIPTION:Presentation tomorrow!',
+                'END:VALARM',
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\r\n');
+
+            const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'presentation.ics';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ── Print / PDF ──
+        function printForInstructor() {
+            saveProgress();
+            const data = getData();
+            const subtitle = document.getElementById('printSubtitle');
+            const parts = [];
+            if (data.studentName) parts.push(data.studentName);
+            if (data.presentationDate) {
+                const d = new Date(data.presentationDate + 'T00:00:00');
+                parts.push('Presentation: ' + d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }));
+            }
+            parts.push('Exported: ' + new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }));
+            subtitle.textContent = parts.join(' • ');
+            window.print();
+        }
+
+        // ── Download Snapshot ──
+        function downloadSnapshot() {
+            saveProgress();
+            const data = getData();
+
+            // Build a standalone HTML with all data pre-filled and no localStorage dependency
+            const studentName = escapeHtml(data.studentName || '');
+            const projectName = escapeHtml(data.projectName || '');
+            const projectRationale = escapeHtml(data.projectRationale || '');
+            const presDate = data.presentationDate || '';
+            const presDateFormatted = presDate
+                ? new Date(presDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' })
+                : '—';
+            const generalNotes = escapeHtml(data.generalNotes || '');
+
+            let stepsHtml = '';
+            steps.forEach(step => {
+                const sd = data.steps && data.steps[step.id] ? data.steps[step.id] : { completed: false, actions: [], diary: '' };
+                let actionsHtml = '';
+                sd.actions.forEach(a => {
+                    if (a.text && a.text.trim()) {
+                        const status = a.completed ? '✅' : '⬜';
+                        const dueStr = a.dueDate ? ` (Due: ${new Date(a.dueDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})` : '';
+                        actionsHtml += `<div style="padding:6px 10px;background:#f8f9fa;border:1px solid #e0e0e0;border-radius:6px;margin:4px 0;font-size:0.9em;">${status} ${escapeHtml(a.text)}${dueStr}</div>`;
+                    }
+                });
+
+                const diaryText = sd.diary ? `<div style="margin-top:10px;padding:10px;background:#f0f1ff;border-radius:6px;border:1px solid #ddd;"><strong style="font-size:0.8em;color:#555;">NOTES:</strong><br><span style="font-size:0.9em;">${escapeHtml(sd.diary).replace(/\n/g, '<br>')}</span></div>` : '';
+
+                let stepLinksHtml = '';
+                if (sd.links && sd.links.length > 0) {
+                    stepLinksHtml = `<div style="margin-top:8px;padding:8px 10px;background:#f4f5fb;border-radius:6px;border:1px solid #e0e0e0;">
+                        <strong style="font-size:0.75em;color:#555;text-transform:uppercase;letter-spacing:0.04em;">📎 Working Files & Links</strong>
+                        ${sd.links.map(l => `<div style="font-size:0.85em;margin-top:4px;">🔗 <strong>${escapeHtml(l.name)}</strong>: <a href="${escapeHtml(l.url)}" style="color:#5b6cf5;">${escapeHtml(l.url)}</a></div>`).join('')}
+                    </div>`;
+                }
+
+                stepsHtml += `
+                    <div style="border:1px solid #ddd;border-radius:10px;padding:18px;margin-bottom:14px;${sd.completed ? 'border-left:4px solid #4ade80;' : ''}">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <div><strong>Step ${step.id}: ${step.title}</strong><br><span style="font-size:0.82em;color:#777;">${step.duration}</span></div>
+                            <span style="font-size:0.82em;padding:4px 12px;border-radius:20px;background:${sd.completed ? '#dcfce7' : '#fef3c7'};color:${sd.completed ? '#166534' : '#92400e'};">${sd.completed ? '✓ Completed' : 'In Progress'}</span>
+                        </div>
+                        ${actionsHtml}
+                        ${stepLinksHtml}
+                        ${diaryText}
+                    </div>`;
+            });
+
+            let linksHtml = '';
+            if (data.links && data.links.length > 0) {
+                linksHtml = data.links.map(l => `<div style="padding:8px 12px;background:#f8f9fa;border:1px solid #e0e0e0;border-radius:6px;margin:4px 0;"><strong>${escapeHtml(l.name)}</strong>: <a href="${escapeHtml(l.url)}" style="color:#5b6cf5;">${escapeHtml(l.url)}</a></div>`).join('');
+            }
+
+            const snapshot = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluesky Project — ${studentName || 'Submission'}</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: #f4f5fb; color: #1a1a2e; padding: 32px; line-height: 1.6; }
+        .page { max-width: 800px; margin: 0 auto; background: #fff; border-radius: 14px; box-shadow: 0 2px 20px rgba(0,0,0,0.08); padding: 40px; }
+        .page-header { text-align: center; border-bottom: 2px solid #5b6cf5; padding-bottom: 20px; margin-bottom: 28px; }
+        .page-header h1 { font-size: 1.8em; color: #1a1a2e; }
+        .page-header p { color: #666; font-size: 0.9em; margin-top: 4px; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+        .info-box { padding: 14px; background: #f4f5fb; border-radius: 8px; border: 1px solid #e0e0e0; }
+        .info-box.full { grid-column: 1 / -1; }
+        .info-box label { font-size: 0.72em; text-transform: uppercase; letter-spacing: 0.05em; color: #777; display: block; margin-bottom: 3px; }
+        .info-box span { font-size: 0.95em; font-weight: 500; }
+        .section-heading { font-size: 1.1em; font-weight: 600; margin: 24px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #e0e0e0; }
+        .notes-box { margin-top: 24px; padding: 16px; background: #f4f5fb; border-radius: 8px; border: 1px solid #e0e0e0; white-space: pre-wrap; font-size: 0.9em; }
+        .badge { display: inline-block; font-size: 0.75em; padding: 2px 10px; border-radius: 20px; margin-left: 8px; }
+        @media print { body { padding: 0; background: #fff; } .page { box-shadow: none; padding: 20px; } }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="page-header">
+            <h1>Bluesky Creativity Project</h1>
+            <p>Project submission — exported ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+        </div>
+        <div class="info-grid">
+            <div class="info-box"><label>Student</label><span>${studentName || '—'}</span></div>
+            <div class="info-box"><label>Presentation Date</label><span>${presDateFormatted}</span></div>
+            <div class="info-box full"><label>Project</label><span>${projectName || '—'}</span></div>
+            <div class="info-box full"><label>Rationale</label><span>${projectRationale || '—'}</span></div>
+        </div>
+        <div class="section-heading">Steps &amp; Progress</div>
+        ${stepsHtml}
+        ${linksHtml ? `<div class="section-heading">Working Files &amp; Links</div>${linksHtml}` : ''}
+        ${generalNotes ? `<div class="section-heading">Notes &amp; Reminders</div><div class="notes-box">${generalNotes.replace(/\n/g, '<br>')}</div>` : ''}
+    </div>
+</body>
+</html>`;
+
+            const blob = new Blob([snapshot], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bluesky-project${studentName ? '-' + studentName.replace(/\s+/g, '-').toLowerCase() : ''}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ── Share Link ──
+        async function generateShareLink() {
+            saveProgress();
+            const data = getData();
+            const jsonStr = JSON.stringify(data);
+            
+            try {
+                const compressed = await compressData(jsonStr);
+                const baseUrl = window.location.origin + window.location.pathname;
+                const shareUrl = baseUrl + '?d=' + compressed;
+
+                document.getElementById('shareLinkUrl').value = shareUrl;
+                document.getElementById('shareLinkOutput').style.display = '';
+                document.getElementById('copyLinkBtn').textContent = '📋 Copy';
+
+                // Check URL length
+                if (shareUrl.length > 8000) {
+                    document.getElementById('shareLinkOutput').insertAdjacentHTML('beforeend',
+                        '<div style="color:var(--warning);font-size:0.78em;margin-top:6px;">⚠️ This link is quite long. If it doesn\'t work when pasted, use the <strong>Download HTML Snapshot</strong> option instead.</div>'
+                    );
+                }
+            } catch(e) {
+                alert('Failed to generate share link. Try using the Download HTML Snapshot option instead.');
+                console.error(e);
+            }
+        }
+
+        function copyShareLink() {
+            const input = document.getElementById('shareLinkUrl');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(input.value).then(() => {
+                const btn = document.getElementById('copyLinkBtn');
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => btn.textContent = '📋 Copy', 2000);
+            }).catch(() => {
+                // Fallback
+                document.execCommand('copy');
+                const btn = document.getElementById('copyLinkBtn');
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => btn.textContent = '📋 Copy', 2000);
+            });
+        }
+
+        function clearSharedView() {
+            window.location.href = window.location.origin + window.location.pathname;
+        }
+
+        // ── Rubric Self-Check ──
+        const rubricItems = [
+            { id: 'r1', category: 'Proposal Quality', text: 'Project title is clear and specific' },
+            { id: 'r2', category: 'Proposal Quality', text: 'Rationale includes justification — why this project is needed' },
+            { id: 'r3', category: 'Proposal Quality', text: 'Rationale states the problem clearly and specifically' },
+            { id: 'r4', category: 'Proposal Quality', text: 'Rationale explains your unique connection and background' },
+            { id: 'r5', category: 'Completion Plan', text: 'Step-by-step plan with specific action items for each step' },
+            { id: 'r6', category: 'Completion Plan', text: 'Realistic timeframe with due dates assigned' },
+            { id: 'r7', category: 'Creativity & Capacity', text: 'Connects to course content (Ch.2 Creative Thinking, Ch.7 Design Thinking, sources)' },
+            { id: 'r8', category: 'Creativity & Capacity', text: 'Demonstrates how the project fosters your personal creativity' },
+            { id: 'r9', category: 'Creativity & Capacity', text: 'Considers your capacity and resources (skills, AI tools, time)' },
+        ];
+
+        function renderRubricChecklist() {
+            const data = getData();
+            if (!data.rubricChecks) data.rubricChecks = {};
+            const container = document.getElementById('rubricChecklist');
+            if (!container) return;
+
+            let currentCat = '';
+            let html = '';
+            rubricItems.forEach(item => {
+                if (item.category !== currentCat) {
+                    currentCat = item.category;
+                    html += `<div style="font-size:0.72em;font-weight:600;color:var(--accent-bright);text-transform:uppercase;letter-spacing:0.05em;margin:${html ? '14px' : '0'} 0 6px;padding-top:${html ? '10px' : '0'};${html ? 'border-top:1px solid var(--border-subtle);' : ''}">${currentCat}</div>`;
+                }
+                const checked = data.rubricChecks[item.id] ? 'checked' : '';
+                html += `
+                    <div style="display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:${data.rubricChecks[item.id] ? 'var(--success-soft)' : 'var(--bg-input)'};border:1px solid ${data.rubricChecks[item.id] ? 'rgba(74,222,128,0.2)' : 'var(--border-subtle)'};border-radius:var(--radius);margin-bottom:4px;transition:all 0.15s;">
+                        <input type="checkbox" ${checked} onchange="toggleRubricItem('${item.id}')" style="margin-top:2px;accent-color:var(--success);cursor:pointer;" />
+                        <span style="font-size:0.84em;color:${data.rubricChecks[item.id] ? 'var(--success)' : 'var(--text-primary)'};">${item.text}</span>
+                    </div>`;
+            });
+            container.innerHTML = html;
+
+            // Update score
+            const checked = Object.values(data.rubricChecks).filter(v => v).length;
+            const el = document.getElementById('rubricScore');
+            if (el) {
+                el.textContent = `${checked} / ${rubricItems.length}`;
+                el.style.color = checked === rubricItems.length ? 'var(--success)' : 'var(--accent-bright)';
+            }
+        }
+
+        function toggleRubricItem(id) {
+            const data = getData();
+            if (!data.rubricChecks) data.rubricChecks = {};
+            data.rubricChecks[id] = !data.rubricChecks[id];
+            setData(data);
+            renderRubricChecklist();
+        }
+
+        // ── Pre-Fill Project Data ──
+        function prefillEduMapData() {
+            const data = getData();
+            // Only prefill if nothing has been entered yet
+            if (data.studentName || data.projectName) return;
+
+            data.projectName = 'EduMap';
+            data.projectRationale = `Students at Red Deer Polytechnic juggle course schedules, campus navigation, budgets, and city resources across a dozen different apps and websites, creating friction that undermines their academic success and daily wellbeing. EduMap addresses this problem by consolidating these essentials — a planner, interactive campus map, budget tracker, course outline hub, GPA calculator, textbook links, and a Red Deer city guide — into one accessible, student-designed web application. As Amabile's research on creativity emphasizes, intrinsic motivation is the most critical driver of creative work, and this project is fueled by my genuine passion for solving everyday problems and helping fellow students thrive ("How to Kill Creativity," HBR). The design thinking framework from Chapter 7 — empathizing with students, defining their pain points, ideating solutions, prototyping, and testing — will directly guide every stage of development. AI tools (specifically Claude by Anthropic) will be used to accelerate the technical app-building process, allowing me to dedicate more time to user research, design iteration, and creative problem-solving rather than getting stuck on implementation barriers. This project reflects both my creative capacity to identify a real gap in student life (CLO1) and my commitment to using innovative, human-centered methodology to address it (CLO2), while practicing the kind of critical self-reflection (CLO5) and collaborative perspective-merging (CLO6) that turns a good idea into something genuinely useful.`;
+
+            // Calculate dates — 7 weeks from now
+            const today = new Date();
+            function addDays(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
+            function fmt(d) { return d.toISOString().split('T')[0]; }
+
+            const w1End = addDays(today, 7);
+            const w2End = addDays(today, 14);
+            const w3End = addDays(today, 21);
+            const w4End = addDays(today, 28);
+            const w5End = addDays(today, 35);
+            const w6End = addDays(today, 42);
+            const w7End = addDays(today, 49);
+
+            data.presentationDate = fmt(w7End);
+
+            data.steps = {
+                1: {
+                    completed: false,
+                    diary: '',
+                    links: [
+                        { name: 'Ch.2 — Thinking Creatively (Leading Innovation)', url: '#course-content' },
+                        { name: 'How to Kill Creativity — Amabile (HBR)', url: 'https://pickardlaws.com/myleadership/myfiles/rtdocs/hbr/HowToKillCreativityHBR0998.pdf' },
+                    ],
+                    actions: [
+                        { text: 'Interview 3-5 classmates about their biggest frustrations navigating campus life, city resources, and academic tools', completed: false, dueDate: fmt(addDays(today, 3)) },
+                        { text: 'Identify and list the top 5 student problems EduMap could solve — rank by impact and frequency', completed: false, dueDate: fmt(addDays(today, 5)) },
+                        { text: 'Review Ch.2 (Thinking Creatively) — note how divergent thinking and "what if" questions apply to student needs', completed: false, dueDate: fmt(w1End) },
+                        { text: 'Document empathy findings: what do students actually do daily? What tools do they already use? What\'s missing?', completed: false, dueDate: fmt(w1End) },
+                    ]
+                },
+                2: {
+                    completed: false,
+                    diary: '',
+                    links: [
+                        { name: 'ScienceDaily — Creative Thinking Research', url: 'https://www.sciencedaily.com/releases/2016/11/161123183914.htm' },
+                        { name: 'MyStudyLife — Competitor Research', url: 'https://www.mystudylife.com/' },
+                        { name: 'Notion Student Templates', url: 'https://www.notion.so/templates/category/school' },
+                    ],
+                    actions: [
+                        { text: 'Research 3 existing student apps (MyStudyLife, UniDays, Notion) — note strengths, weaknesses, and gaps', completed: false, dueDate: fmt(addDays(today, 10)) },
+                        { text: 'Brainstorm 15+ feature ideas without filtering — use divergent thinking techniques from Ch.2', completed: false, dueDate: fmt(addDays(today, 11)) },
+                        { text: 'Reference ScienceDaily article on creative thinking — document how combining unrelated domains (map + budget + wellness) creates innovation', completed: false, dueDate: fmt(addDays(today, 12)) },
+                        { text: 'Group brainstormed features into categories: Academic, Financial, Navigation, Wellness, City Life', completed: false, dueDate: fmt(w2End) },
+                    ]
+                },
+                3: {
+                    completed: false,
+                    diary: '',
+                    links: [
+                        { name: 'Ch.7 — Design Thinking (Leading Innovation)', url: '#course-content' },
+                        { name: 'Figma — Free Wireframing Tool', url: 'https://www.figma.com/' },
+                    ],
+                    actions: [
+                        { text: 'Apply convergent thinking: narrow features to the 8-10 most impactful and buildable ones', completed: false, dueDate: fmt(addDays(today, 16)) },
+                        { text: 'Sketch wireframes/layouts for: dashboard, campus map, planner, budget tracker, city guide', completed: false, dueDate: fmt(addDays(today, 18)) },
+                        { text: 'Define visual identity — color scheme, fonts, and overall feel (student-friendly, clean, modern)', completed: false, dueDate: fmt(addDays(today, 20)) },
+                        { text: 'Write a user flow: Student opens EduMap → what do they see first? How do they navigate between features?', completed: false, dueDate: fmt(w3End) },
+                    ]
+                },
+                4: {
+                    completed: false,
+                    diary: '',
+                    links: [
+                        { name: 'Claude AI — Build Assistant', url: 'https://claude.ai/' },
+                        { name: 'Red Deer Polytechnic Campus Map', url: 'https://rdpolytech.ca/campus-maps' },
+                        { name: 'Red Deer Transit Routes', url: 'https://www.reddeer.ca/city-services/transit/' },
+                        { name: 'Google Fonts — Free Typography', url: 'https://fonts.google.com/' },
+                    ],
+                    actions: [
+                        { text: 'Build core layout and navigation using Claude AI — dashboard with feature cards/tabs', completed: false, dueDate: fmt(addDays(today, 25)) },
+                        { text: 'Implement planner/calendar, course outline storage, and GPA calculator features', completed: false, dueDate: fmt(addDays(today, 28)) },
+                        { text: 'Build interactive campus map with clickable buildings and room search', completed: false, dueDate: fmt(addDays(today, 31)) },
+                        { text: 'Add budget tracker, textbook links, Red Deer city guide, student discounts, and wellness resources', completed: false, dueDate: fmt(w5End) },
+                    ]
+                },
+                5: {
+                    completed: false,
+                    diary: '',
+                    links: [
+                        { name: 'Google Forms — Create Feedback Survey', url: 'https://docs.google.com/forms/' },
+                    ],
+                    actions: [
+                        { text: 'Have 3-4 classmates test the prototype — document their feedback on usability, missing features, and confusing elements', completed: false, dueDate: fmt(addDays(today, 38)) },
+                        { text: 'Iterate based on feedback: fix navigation issues, add requested features, polish visual design', completed: false, dueDate: fmt(addDays(today, 40)) },
+                        { text: 'Self-reflect (CLO5): What worked? What surprised me? What would I do differently? Write in step notes.', completed: false, dueDate: fmt(w6End) },
+                    ]
+                },
+                6: {
+                    completed: false,
+                    diary: '',
+                    links: [
+                        { name: 'Google Slides — Presentation', url: 'https://docs.google.com/presentation/' },
+                        { name: 'Google Docs — One-Page Summary', url: 'https://docs.google.com/document/' },
+                    ],
+                    actions: [
+                        { text: 'Create presentation slides: problem → empathy research → design process → EduMap demo → reflection → CLO connections', completed: false, dueDate: fmt(addDays(today, 44)) },
+                        { text: 'Write one-page summary connecting EduMap to CLO1 (creative capacity), CLO2 (innovative methodology), CLO5 (self-reflection), CLO6 (collaboration)', completed: false, dueDate: fmt(addDays(today, 46)) },
+                        { text: 'Rehearse presentation — practice live demo of EduMap features', completed: false, dueDate: fmt(addDays(w7End, -1)) },
+                    ]
+                }
+            };
+
+            data.links = [
+                { name: 'Ch.2 — Thinking Creatively (Leading Innovation, 2nd Ed.)', url: '#course-content' },
+                { name: 'Ch.7 — Design Thinking (Leading Innovation, 2nd Ed.)', url: '#course-content' },
+                { name: 'How to Kill Creativity — Amabile (HBR)', url: 'https://pickardlaws.com/myleadership/myfiles/rtdocs/hbr/HowToKillCreativityHBR0998.pdf' },
+                { name: 'ScienceDaily — Creative Thinking Research', url: 'https://www.sciencedaily.com/releases/2016/11/161123183914.htm' },
+            ];
+
+            data.generalNotes = 'AI Usage Note: Claude (by Anthropic) will be used throughout the prototype phase to accelerate web app development. This allows me to focus creative energy on user research, design decisions, and problem-solving rather than getting stuck on technical implementation. All design decisions, user research, ideation, and testing remain my own work.';
+
+            setData(data);
+        }
+
+        window.onload = initializePlanner;
+        setInterval(saveProgress, 30000);
+    </script>
+</body>
+</html>
